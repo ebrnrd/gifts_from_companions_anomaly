@@ -1,5 +1,7 @@
 # Gifts From Companions - S.T.A.L.K.E.R. Anomaly Addon
 
+Go to [releases](https://github.com/ebrnrd/gifts_from_companions_anomaly/releases) to download
+
 S.T.A.L.K.E.R. Anomaly addon that make companions give you gifts from time to time.
 
 This is my first ever mod. It's a very simple mod that doesn't modify any file so it should be compatible with lots of mods.
