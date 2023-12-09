@@ -1,4 +1,4 @@
-# gifts_from_companions_anomaly
+# Gifts From Companions - S.T.A.L.K.E.R. Anomaly Addon
 
 S.T.A.L.K.E.R. Anomaly mod that makes companions give you gifts from time to time.
 
