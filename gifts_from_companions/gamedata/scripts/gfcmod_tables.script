@@ -1,0 +1,438 @@
+
+
+
+local bad_gifts_table = {
+    
+    -- FOOD
+    "breadold",
+    "conserva",
+    "mutant_part_boar_chop",
+    "sausage",
+    
+    -- DRINK
+    "cigar",
+    "cigarettes",
+    "cigarettes_lucky",
+    "cigarettes_russian",
+    "joint",
+    "tobacco",
+
+    -- MEDICAL
+    "bandage",
+    "medkit",
+
+    -- DEVICE
+    "itm_pda_common",
+
+    -- TOOL
+    "batteries_dead",
+    "bolts_pack",
+    "boc_matches",
+
+    -- REPAIR
+    "glue_b",
+    "gun_oil_ru",
+    "sewing_thread",
+
+    -- MISC
+    "ball_hammer",
+    "broken_detector",
+    "cards",
+    "cutlery",
+    "e_syringe",
+    "jar",
+    "picture_woman",
+    "porn",
+    "porn2",
+    "radio2",
+    "shovel_old",
+    "underwear",
+    "welding_goggles",
+
+    -- AMMO
+    "ammo_12x70_buck",
+    "ammo_9x18_pmm",
+    "ammo_9x18_fmj",
+    "ammo_9x19_pbp",
+    "ammo_9x19_fmj",
+}
+
+local normal_gifts_table = {
+    
+    -- FOOD
+    "beans",
+    "bread",
+    "chili",
+    "chocolate",
+    "conserva",
+    "corn",
+    "meat_boar",
+    "meat_dog",
+    "nuts",
+    "sausage",
+    "tomato",
+    "tushonka",
+
+    -- DRINK
+    "beer",
+    "cigar",
+    "cigar1",
+    "cigar2",
+    "cigar3",
+    "cigarettes",
+    "cigarettes_lucky",
+    "cigarettes_russian",
+    "energy_drink",
+    "joint",
+    "marijuana",
+    "tobacco",
+    "vodka",
+    "vodka2",
+    "water_drink",    
+
+    -- MEDICAL
+    "antirad",
+    "bandage",
+    "drug_sleepingpills",
+    "medkit",
+    "stimpack",
+    "yadylin",    
+
+    -- DEVICE
+    "detector_simple",
+    "itm_pda_common",
+    "itm_pda_uncommon",    
+
+    -- TOOL
+    "batteries_dead",
+    "bolts_pack",
+    "box_matches",
+    "cooking",
+    "grooming",
+    "guitar_a",
+    "harmonica_a",
+    "journal",
+    "kerosene",
+    "roubles",
+    "swiss_knife",    
+
+    -- REPAIR
+    "glue_a",
+    "glue_b",
+    "gun_oil_ru",
+    "gun_oil_ru_d",
+    "ramrod_tool",
+    "rasp_tool",
+    "sewing_kit_b",
+    "sewing_thread",
+    "sharpening_stones",
+    
+    -- MISC
+    "ball_hammer",
+    "boots",
+    "broken_detector",
+    "cards",
+    "cutlery",
+    "duct_tape",
+    "e_syringe",
+    "flashlight_broken",
+    "gloves",
+    "grease",
+    "hand_watch",
+    "headlamp",
+    "jar",
+    "jewelry_box",
+    "picture_woman",
+    "porn",
+    "porn2",
+    "radio",
+    "radio2",
+    "rope",
+    "shovel_old",
+    "steel_wool",
+    "underwear",
+    "walkie",
+    "welding_goggles",    
+
+    -- AMMO
+    "ammo_11.43x23_fmj",
+    "ammo_12x70_buck",
+    "ammo_12x76_bull",
+    "ammo_5.45x39_ep",
+    "ammo_5.56x45_fmj",
+    "ammo_7.62x39_fmj",
+    "ammo_9x18_fmj",
+    "ammo_9x18_pmm",
+    "ammo_9x19_fmj",
+    "ammo_9x19_pbp",
+}
+
+local good_gifts_table = {
+    
+    -- FOOD
+    "beans",
+    "bread",
+    "chili",
+    "chocolate",
+    "conserva",
+    "corn",
+    "meat_boar",
+    "meat_dog",
+    "nuts",
+    "sausage",
+    "tomato",
+    "tushonka",
+
+    -- DRINK
+    "beer",
+    "energy_drink",
+    "joint",
+    "marijuana",
+    "mineral_water",
+    "tea",
+    "tobacco",
+    "vodka",
+    "vodka2",
+    "vodka_quality",
+    "water_drink",    
+
+    -- MEDICAL
+    "antirad",
+    "bandage",
+    "cocaine",
+    "drug_anabiotic",
+    "drug_antidot",
+    "drug_booster",
+    "drug_psy_blockade",
+    "drug_radioprotector",
+    "drug_sleepingpills",
+    "glucose",
+    "medkit",
+    "medkit_army",
+    "morphine",
+    "stimpack",
+    "yadylin",    
+
+    -- DEVICE
+    "detector_simple",
+    "itm_pda_common",
+    "itm_pda_uncommon",    
+
+    -- TOOL
+    "batteries_dead",
+    "bolts_pack",
+    "box_matches",
+    "cooking",
+    "grooming",
+    "guitar_a",
+    "harmonica_a",
+    "journal",
+    "kerosene",
+    "roubles",
+    "swiss_knife",    
+
+    -- REPAIR
+    "glue_a",
+    "glue_b",
+    "glue_e",
+    "gun_oil_ru",
+    "gun_oil_ru_d",
+    "ramrod_tool",
+    "rasp_tool",
+    "sewing_kit_a",
+    "sewing_kit_b",
+    "sewing_kit_h",
+    "sewing_thread",
+    "sharpening_stones",
+    "solvent",
+    
+    -- MISC
+    "ball_hammer",
+    "boots",
+    "broken_detector",
+    "cards",
+    "cutlery",
+    "duct_tape",
+    "e_syringe",
+    "flashlight_broken",
+    "gloves",
+    "grease",
+    "hand_watch",
+    "headlamp",
+    "jar",
+    "jewelry_box",
+    "picture_woman",
+    "porn",
+    "porn2",
+    "radio",
+    "radio2",
+    "rope",
+    "shovel_old",
+    "steel_wool",
+    "underwear",
+    "walkie",
+    "welding_goggles",    
+
+    -- AMMO
+    "ammo_11.43x23_fmj",
+    "ammo_12x70_buck",
+    "ammo_12x76_bull",
+    "ammo_12x76_dart",
+    "ammo_5.45x39_ep",
+    "ammo_5.45x39_fmj",
+    "ammo_5.56x45_fmj",
+    "ammo_7.62x39_fmj",
+    "ammo_9x18_fmj",
+    "ammo_9x18_pmm",
+    "ammo_9x19_fmj",
+    "ammo_9x19_pbp",
+}
+
+local excellent_gifts_table = {
+    
+    -- FOOD
+    "beans",
+    "chili",
+    "chocolate",
+    "corn",
+    "meat_boar",
+    "meat_dog",
+    "mre",
+    "nuts",
+    "protein",
+    "sausage",
+    "tushonka",
+
+    -- DRINK
+    "energy_drink",
+    "joint",
+    "marijuana",
+    "mineral_water",
+    "tea",
+    "tobacco",
+    "vodka",
+    "vodka2",
+    "vodka_quality",
+    "water_drink",    
+
+    -- MEDICAL
+    "akvatab",
+    "antirad",
+    "bandage",
+    "cocaine",
+    "drug_anabiotic",
+    "drug_antidot",
+    "drug_booster",
+    "drug_psy_blockade",
+    "drug_radioprotector",
+    "drug_sleepingpills",
+    "glucose",
+    "medkit",
+    "medkit_army",
+    "medkit_scientic",
+    "morphine",
+    "rebirth",
+    "stimpack",
+    "stimpack_army",
+    "yadylin",    
+
+    -- DEVICE
+    "detector_simple",
+    "itm_pda_common",
+    "itm_pda_uncommon",
+    "itm_pda_rare",
+
+    -- TOOL
+    "batteries_dead",
+    "bolts_pack",
+    "box_matches",
+    "cooking",
+    "grooming",
+    "guitar_a",
+    "harmonica_a",
+    "journal",
+    "kerosene",
+    "roubles",
+    "swiss_knife",    
+
+    -- REPAIR
+    "glue_a",
+    "glue_b",
+    "glue_e",
+    "gun_oil_ru",
+    "gun_oil_ru_d",
+    "ramrod_tool",
+    "rasp_tool",
+    "sewing_kit_a",
+    "sewing_kit_b",
+    "sewing_kit_h",
+    "sewing_thread",
+    "sharpening_stones",
+    "solvent",
+    
+    -- MISC
+    "ball_hammer",
+    "boots",
+    "broken_detector",
+    "cards",
+    "duct_tape",
+    "gloves",
+    "grease",
+    "hand_watch",
+    "headlamp",
+    "jewelry_box",
+    "picture_woman",
+    "porn",
+    "porn2",
+    "radio",
+    "rope",
+    "shovel_mili",
+    "steel_wool",
+    "synthrope",
+    "tarpaulin",
+    "underwear",
+    "walkie",
+    "welding_goggles",    
+
+    -- AMMO
+    "ammo_11.43x23_fmj",
+    "ammo_12x70_buck",
+    "ammo_12x76_bull",
+    "ammo_12x76_dart",
+    "ammo_5.45x39_ap",
+    "ammo_5.45x39_ep",
+    "ammo_5.45x39_fmj",
+    "ammo_5.56x45_ap",
+    "ammo_5.56x45_fmj",
+    "ammo_7.62x39_ap",
+    "ammo_7.62x39_fmj",
+    "ammo_9x18_fmj",
+    "ammo_9x18_pmm",
+    "ammo_9x19_fmj",
+    "ammo_9x19_pbp",
+
+}
+
+local selected_gifts_table = {}
+
+-- choose a random gift from the array
+function get_random_gift()
+    local current_rept = db.actor:character_reputation()
+    
+    if current_rept and current_rept <= -499 then
+        selected_gifts_table = bad_gifts_table
+        return selected_gifts_table[math.random(#selected_gifts_table)]
+    
+    elseif current_rept and current_rept <= 999 then
+        selected_gifts_table = normal_gifts_table
+        return selected_gifts_table[math.random(#selected_gifts_table)]
+   
+    elseif current_rept and current_rept <= 1499 then
+        selected_gifts_table = good_gifts_table
+        return selected_gifts_table[math.random(#selected_gifts_table)]
+    
+    elseif current_rept then
+        selected_gifts_table = excellent_gifts_table
+        return selected_gifts_table[math.random(#selected_gifts_table)]
+    end
+end

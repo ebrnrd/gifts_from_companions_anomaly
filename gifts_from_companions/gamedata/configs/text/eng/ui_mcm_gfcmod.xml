@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="windows-1251"?>
+
+<string_table>
+	<string id="ui_mcm_gfcmod_title">
+		<text>Gifts From Companions Options</text>
+	</string>
+	<string id="ui_mcm_menu_gfcmod">
+		<text>Gifts From Companions</text>
+	</string>
+	<string id="ui_mcm_gfcmod_desc1">
+		<text>General Settings</text>
+	</string>
+
+	<string id="ui_mcm_gfcmod_min_timer">
+		<text>Minimum time before receiving a new gift (s)</text>
+	</string>
+	<string id="ui_mcm_gfcmod_max_timer">
+		<text>Maximum time before receiving a new gift (s)</text>
+	</string>
+	<string id="ui_mcm_gfcmod_gift_chance">
+		<text>Chance of receiving a gift after the time has passed</text>
+	</string>
+</string_table>

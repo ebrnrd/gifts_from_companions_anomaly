@@ -1,0 +1,23 @@
+function on_mcm_load()
+    op = { id= "gfcmod",sh=true ,gr={
+            {id = "title",                      type= "slide", link= "ui_options_slider_player", text="ui_mcm_gfcmod_title", size= {512,50}, spacing= 20},
+            {id = "desc1",                      type = "desc", text = "ui_mcm_gfcmod_desc1"},
+
+			{id = "min_timer",                  type = "track", val = 2, min=60,     max=900,     step=1,     def = 300},
+            {id = "max_timer",                  type = "track", val = 2, min=61,     max=1800,     step=1,     def = 600},
+            {id = "gift_chance",                type = "track", val = 2, min=0,     max=1,     step=0.1,     def = 0.2},
+		}
+    }
+    return op
+end 
+
+-- If you don't use MCM, change your defaults from here.
+local defaults = {
+    ["min_timer"] = 300,
+    ["max_timer"] = 600,
+    ["gift_chance"] = 0.2,
+}
+
+function get_config(key)
+    if ui_mcm then return ui_mcm.get("gfcmod/"..key) else return defaults[key] end
+end

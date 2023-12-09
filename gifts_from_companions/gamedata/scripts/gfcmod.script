@@ -1,0 +1,89 @@
+--====================< Settings >====================--
+
+local msg_delay = 1000
+local show_time = 3000
+
+--=================== VARIABLES =====================
+
+local max_timer
+local min_timer
+
+-- tg_target is used to calculate how much time to wait after sleeping to give a gift
+local tg_target = 0
+local n = 1
+
+-- max distance from companion to player to give gift
+local max_gift_distance = 30
+
+local gift_chance = 0.5
+
+local random_messages_number = 14
+
+local clr_g = utils_xml.get_color("d_green")
+local clr_w = utils_xml.get_color("white")
+
+--=================== FUNCTIONS ====================
+
+function load_settings()
+    min_timer = gfcmod_mcm.get_config("min_timer")
+    max_timer = gfcmod_mcm.get_config("max_timer")
+    gift_chance = gfcmod_mcm.get_config("gift_chance")
+end
+
+local gt = game.translate_string
+
+function get_random_companion()
+    local companion_table = axr_companions.list_actor_squad_by_id()
+    return level.object_by_id(companion_table[math.random(#companion_table)])
+end
+
+
+function calculate_tg_target()
+    local tg = time_global()
+    tg_target = tg + math.random(min_timer*1000, max_timer*1000)
+end
+
+function actor_on_sleep()
+    calculate_tg_target()
+end
+
+function actor_on_first_update()
+    calculate_tg_target()
+end
+
+function actor_on_update()
+
+    n = n + 1
+    if n ~= 1000 then
+        return
+    end
+
+    n = 1
+    local tg = time_global()
+
+    if tg >= tg_target and math.random() <= gift_chance then
+        local rnd_companion = get_random_companion()
+        if not rnd_companion or rnd_companion:id() == 0 or distance_between(db.actor,rnd_companion) > max_gift_distance then
+            return
+        end
+        
+        local random_gift = gfcmod_tables.get_random_gift()
+        local msg = clr_g .. rnd_companion:character_name() .. ": " .. clr_w .. gt("st_gfcmod_basic" .. math.random(1, random_messages_number))
+        news_manager.send_tip(db.actor, msg, nil, rnd_companion, show_time, rnd_companion:id())
+        alife_create_item(random_gift, alife():object(0))
+        news_manager.relocate_item(db.actor, "in", random_gift, 1)
+        calculate_tg_target()
+    end
+
+end
+
+
+--================== CALLBACKS =====================
+function on_game_start()
+    RegisterScriptCallback("actor_on_first_update", actor_on_first_update)
+    RegisterScriptCallback("actor_on_update", actor_on_update)
+    RegisterScriptCallback("actor_on_sleep", actor_on_sleep)
+    RegisterScriptCallback("on_game_load", load_settings)
+    RegisterScriptCallback("on_option_change", load_settings)
+
+end
