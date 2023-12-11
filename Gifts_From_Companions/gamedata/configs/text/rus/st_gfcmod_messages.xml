@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="windows-1251"?>
+
+<string_table>
+
+	<!--BASIC MESSAGES-->
+	<string id="st_gfcmod_basic1">
+		<text>Эй, мужик, это заставило меня вспомнить о тебе...</text>
+	</string>
+	
+    <string id="st_gfcmod_basic2">
+		<text>Знаешь что? Спасибо за прекрасное время вместе, вот кое-чего для тебя.</text>
+	</string>	
+
+    <string id="st_gfcmod_basic3">
+		<text>Возьмёшь? Мне от этого никакой пользы.</text>
+	</string>
+
+    <string id="st_gfcmod_basic4">
+		<text>Эй глянь! Глянь что нашёл!</text>
+	</string>
+
+	<string id="st_gfcmod_basic5">
+		<text>Эй, нашёл тут кое-что. Думаю тебя заинтересует.</text>
+	</string>
+
+	<string id="st_gfcmod_basic6">
+		<text>Вот вещица для тебя. Считай это знаком свыше.</text>
+	</string>
+
+	<string id="st_gfcmod_basic7">
+		<text>Нашёл интересный предмет. Теперь он твой.</text>
+	</string>
+
+	<string id="st_gfcmod_basic8">
+		<text>Угадай, на что я наступил? Это сюрприз, бери!</text>
+	</string>
+
+	<string id="st_gfcmod_basic9">
+		<text>Нашёл малость хабара во время ходок. Возьми, друг.</text>
+	</string>
+
+	<string id="st_gfcmod_basic10">
+		<text>Прибрал к рукам кое-что. Твоё, без обязательств.</text>
+	</string>
+
+	<string id="st_gfcmod_basic11">
+		<text>Подарок от зоны! Нашёл во время прошлой ходки.</text>
+	</string>
+
+	<string id="st_gfcmod_basic12">
+		<text>Глянь-ка! Нашёл кое-что, что может тебе пригодиться.</text>
+	</string>
+
+	<string id="st_gfcmod_basic13">
+		<text>У меня для тебя небольшой сюрприз. Наслаждайся!</text>
+	</string>
+
+	<string id="st_gfcmod_basic14">
+		<text>Время для подарка, друг мой! Нашёл кое-что полезное как раз для тебя.</text>
+	</string>
+
+</string_table>

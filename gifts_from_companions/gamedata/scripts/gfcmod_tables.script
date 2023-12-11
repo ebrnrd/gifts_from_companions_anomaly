@@ -1,6 +1,4 @@
 
-
-
 local bad_gifts_table = {
     
     -- FOOD
@@ -417,21 +415,21 @@ local selected_gifts_table = {}
 
 -- choose a random gift from the array
 function get_random_gift()
-    local current_rept = db.actor:character_reputation()
+    local current_friendship = gfcmod.get_current_friendship()
     
-    if current_rept and current_rept <= -499 then
+    if current_friendship and current_friendship <= 25 then
         selected_gifts_table = bad_gifts_table
         return selected_gifts_table[math.random(#selected_gifts_table)]
     
-    elseif current_rept and current_rept <= 999 then
+    elseif current_friendship and current_friendship <= 50 then
         selected_gifts_table = normal_gifts_table
         return selected_gifts_table[math.random(#selected_gifts_table)]
    
-    elseif current_rept and current_rept <= 1499 then
+    elseif current_friendship and current_friendship <= 75 then
         selected_gifts_table = good_gifts_table
         return selected_gifts_table[math.random(#selected_gifts_table)]
     
-    elseif current_rept then
+    elseif current_friendship then
         selected_gifts_table = excellent_gifts_table
         return selected_gifts_table[math.random(#selected_gifts_table)]
     end

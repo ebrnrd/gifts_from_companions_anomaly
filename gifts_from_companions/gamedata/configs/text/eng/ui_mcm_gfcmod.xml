@@ -20,4 +20,10 @@
 	<string id="ui_mcm_gfcmod_gift_chance">
 		<text>Chance of receiving a gift after the time has passed</text>
 	</string>
+	<string id="ui_mcm_gfcmod_friendship_timer">
+		<text>Time between passive friendship increments (s)</text>
+	</string>
+	<string id="ui_mcm_gfcmod_debug_mode">
+		<text>Debug mode</text>
+	</string>
 </string_table>

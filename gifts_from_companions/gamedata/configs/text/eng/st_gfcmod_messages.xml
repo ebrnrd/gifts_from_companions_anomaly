@@ -59,4 +59,16 @@
 		<text>Gift time, my friend! Found something useful just for you.</text>
 	</string>
 
+	<string id="st_gfcmod_friendship_increase_basic">
+		<text>Friendship increased:</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_increase_passive">
+		<text>Spending time together increased the friendship in your squad:</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_decrease_basic">
+		<text>Friendship decreased:</text>
+	</string>
+
 </string_table>

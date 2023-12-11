@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="windows-1251"?>
+
+<string_table>
+	<string id="ui_mcm_gfcmod_title">
+		<text>Опции подарков от напарников</text>
+	</string>
+	<string id="ui_mcm_menu_gfcmod">
+		<text>Подарки от напарников</text>
+	</string>
+	<string id="ui_mcm_gfcmod_desc1">
+		<text>Общие настройки</text>
+	</string>
+
+	<string id="ui_mcm_gfcmod_min_timer">
+		<text>Минимальное время до получения нового подарка (секунды)</text>
+	</string>
+	<string id="ui_mcm_gfcmod_max_timer">
+		<text>Максимальное время до получения нового подарка (секунды)</text>
+	</string>
+	<string id="ui_mcm_gfcmod_gift_chance">
+		<text>Шанс получить подарок по истечении времени</text>
+	</string>
+	<string id="ui_mcm_gfcmod_debug_mode">
+		<text>Дебаг мод</text>
+	</string>
+</string_table>
