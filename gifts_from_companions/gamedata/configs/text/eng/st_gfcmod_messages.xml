@@ -62,13 +62,13 @@
 	<!--STAGES MESSAGES-->
 	
 	<string id="st_gfcmod_bad1">
-		<text>Hey! I found this. I don’t really need it so I guess you can have it.</text>
+		<text>Hey! I found this. I don't really need it so I guess you can have it.</text>
 	</string>
 	<string id="st_gfcmod_bad2">
 		<text>Hey! Want this?</text>
 	</string>
 	<string id="st_gfcmod_bad3">
-		<text>I don’t really trust you but we can still help each other. You can have this.</text>
+		<text>I don't really trust you but we can still help each other. You can have this.</text>
 	</string>
 	<string id="st_gfcmod_bad4">
 		<text>Hey, stumbled upon this. I don't need it, and you look like you could use a help.</text>
