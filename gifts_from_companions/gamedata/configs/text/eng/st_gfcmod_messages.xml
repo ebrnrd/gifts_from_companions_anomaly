@@ -2,7 +2,7 @@
 
 <string_table>
 
-	<!--BASIC MESSAGES-->
+	<!--BASIC MESSAGES (UNUSED)-->
 	<string id="st_gfcmod_basic1">
 		<text>Hey man, this made me think of you...</text>
 	</string>
@@ -57,6 +57,72 @@
 
 	<string id="st_gfcmod_basic14">
 		<text>Gift time, my friend! Found something useful just for you.</text>
+	</string>
+	
+	<!--STAGES MESSAGES-->
+	
+	<string id="st_gfcmod_bad1">
+		<text>Hey! I found this. I don’t really need it so I guess you can have it.</text>
+	</string>
+	<string id="st_gfcmod_bad2">
+		<text>Hey! Want this?</text>
+	</string>
+	<string id="st_gfcmod_bad3">
+		<text>I don’t really trust you but we can still help each other. You can have this.</text>
+	</string>
+	<string id="st_gfcmod_bad4">
+		<text>Hey, stumbled upon this. I don't need it, and you look like you could use a help.</text>
+	</string>
+	<string id="st_gfcmod_bad5">
+		<text>Trust is earned, and I'm not there yet, but here, take this. Better you have it than the Zone swallows it.</text>
+	</string>
+
+	<string id="st_gfcmod_normal1">
+		<text>In the Zone you need every help you can get. Found this, thought it might tip the odds.</text>
+	</string>
+	<string id="st_gfcmod_normal2">
+		<text>It's not all anomalies and mutants with you around. Here, a little something for the road.</text>
+	</string>
+	<string id="st_gfcmod_normal3">
+		<text>This place can eat you alive. Here's a small something to keep you one step ahead.</text>
+	</string>
+	<string id="st_gfcmod_normal4">
+		<text>I appreciate the company. Found this lying around, thought you might make better use of it.</text>
+	</string>
+	<string id="st_gfcmod_normal5">
+		<text>It's not all bad traveling with you. Here, take this. Consider it a rare gesture of kindness.</text>
+	</string>
+
+	<string id="st_gfcmod_good1">
+		<text>I've got your back, and I figured you could use this. Don't say I never did anything for you.</text>
+	</string>
+	<string id="st_gfcmod_good2">
+		<text>You're not half bad to have around. Here, a little gift to show my appreciation.</text>
+	</string>
+	<string id="st_gfcmod_good3">
+		<text>We make a decent team. Found this, thought it might be useful for you.</text>
+	</string>
+	<string id="st_gfcmod_good4">
+		<text>In this godforsaken place, allies are rare. Consider this a gesture of trust, Stalker.</text>
+	</string>
+	<string id="st_gfcmod_good5">
+		<text>We're starting to click, aren't we? Here, a little something for the road.</text>
+	</string>
+
+	<string id="st_gfcmod_excellent1">
+		<text>Trust like this is hard to come by. Here's a gift, a symbol of our unbroken bond.</text>
+	</string>
+	<string id="st_gfcmod_excellent2">
+		<text>I'm glad we're on the same side. Found this and thought of you.</text>
+	</string>
+	<string id="st_gfcmod_excellent3">
+		<text>You're one of the few I can trust out here. Here's a little something for you, my friend.</text>
+	</string>
+	<string id="st_gfcmod_excellent4">
+		<text>You're not just a partner; you're a true friend. Take this as a thank you for being there.</text>
+	</string>
+	<string id="st_gfcmod_excellent5">
+		<text>The trials of the Zone are easier with you around. This is for you, my trusted companion.</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_increase_basic">

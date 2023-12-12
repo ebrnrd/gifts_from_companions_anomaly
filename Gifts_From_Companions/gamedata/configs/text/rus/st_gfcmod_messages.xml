@@ -2,7 +2,7 @@
 
 <string_table>
 
-	<!--BASIC MESSAGES-->
+	<!--BASIC MESSAGES (UNUSED)-->
 	<string id="st_gfcmod_basic1">
 		<text>Эй, мужик, это заставило меня вспомнить о тебе...</text>
 	</string>
@@ -57,6 +57,72 @@
 
 	<string id="st_gfcmod_basic14">
 		<text>Время для подарка, друг мой! Нашёл кое-что полезное как раз для тебя.</text>
+	</string>
+
+	<!--STAGES MESSAGES-->
+
+	<string id="st_gfcmod_bad1">
+		<text>Привет! Нашёл это. Мне это действительно не нужно, так что, думаю, ты можешь взять.</text>
+	</string>
+	<string id="st_gfcmod_bad2">
+		<text>Эй! Хочешь это?</text>
+	</string>
+	<string id="st_gfcmod_bad3">
+		<text>Я тебе не очень доверяю, но мы все равно можем помогать друг другу. Ты можешь взять это.</text>
+	</string>
+	<string id="st_gfcmod_bad4">
+		<text>Эй, наткнулся на это. Мне не нужно, и тебе, кажется, помощь пригодится.</text>
+	</string>
+	<string id="st_gfcmod_bad5">
+		<text>Доверие зарабатывается, и я еще не на том уровне, но вот, возьми это. Лучше у тебя, чем чтобы Зона поглотила.</text>
+	</string>
+
+	<string id="st_gfcmod_normal1">
+		<text>В Зоне каждая помощь кстати. Нашёл это, подумал, что может тебе помочь.</text>
+	</string>
+	<string id="st_gfcmod_normal2">
+		<text>Здесь не только аномалии и мутанты. Вот, маленькое что-то для дороги.</text>
+	</string>
+	<string id="st_gfcmod_normal3">
+		<text>Это место может тебя поглотить. Вот маленькое что-то, чтобы держать тебя впереди.</text>
+	</string>
+	<string id="st_gfcmod_normal4">
+		<text>Я ценю компанию. Нашёл это, подумал, что ты сможешь лучше использовать.</text>
+	</string>
+	<string id="st_gfcmod_normal5">
+		<text>Не все так плохо с тобой путешествовать. Вот, возьми это. Считай это редким проявлением доброты.</text>
+	</string>
+
+	<string id="st_gfcmod_good1">
+		<text>Я за тобой, и подумал, что тебе это пригодится. Не говори, что я никогда ничего не делаю для тебя.</text>
+	</string>
+	<string id="st_gfcmod_good2">
+		<text>Ты не так уж и плох. Вот, маленький подарок в знак моей благодарности.</text>
+	</string>
+	<string id="st_gfcmod_good3">
+		<text>Мы неплохо сработались. Нашёл это, подумал, что тебе пригодится.</text>
+	</string>
+	<string id="st_gfcmod_good4">
+		<text>В этом проклятом месте союзники редки. Считай это жестом доверия, Сталкер.</text>
+	</string>
+	<string id="st_gfcmod_good5">
+		<text>Мы начинаем находить общий язык, правда? Вот, маленькое что-то для дороги.</text>
+	</string>
+
+	<string id="st_gfcmod_excellent1">
+		<text>Доверие, как это, в Зоне трудно найти. Вот подарок, символ нашей непрерывной связи.</text>
+	</string>
+	<string id="st_gfcmod_excellent2">
+		<text>Я рад, что мы на одной стороне. Нашёл это и подумал о тебе.</text>
+	</string>
+	<string id="st_gfcmod_excellent3">
+		<text>Ты один из немногих, кому я могу доверять здесь. Вот маленькое что-то для тебя, мой друг.</text>
+	</string>
+	<string id="st_gfcmod_excellent4">
+		<text>Ты не просто напарник; ты настоящий друг. Возьми это в знак благодарности за то, что ты всегда рядом.</text>
+	</string>
+	<string id="st_gfcmod_excellent5">
+		<text>Испытания Зоны проще с тобой. Вот, это для тебя, мой надежный товарищ.</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_increase_basic">

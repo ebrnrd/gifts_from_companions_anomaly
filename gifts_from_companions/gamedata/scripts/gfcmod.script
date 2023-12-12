@@ -18,7 +18,7 @@ local debug_mode = false
 local show_time = 3000 -- how long the notifications stay on the screen
 local max_gift_distance = 30 --max distance from companion to player to give gift
 local max_friendship = 100
-local random_messages_number = 14 -- the total number of gift phrases in st_gfcmod_messages.xml
+local random_messages_number = 5 -- the total number of gift phrases in st_gfcmod_messages.xml
 
 local clr_g = utils_xml.get_color("d_green")
 local clr_w = utils_xml.get_color("white")
@@ -136,6 +136,21 @@ end
 
 function get_current_friendship()
     return current_friendship
+end
+
+function get_current_friendship_stage()
+    if gfcmod_cache_tbl.friendship <= 25 then
+        return "bad"
+    end
+    if gfcmod_cache_tbl.friendship <= 50 then
+        return "normal"
+    end
+    if gfcmod_cache_tbl.friendship <= 75 then
+        return "good"
+    end
+    if gfcmod_cache_tbl.friendship <= 100 then
+        return "excellent"
+    end
 end
 
 -- code straight up copied from Chatty Companions addon by Darkasleif
@@ -354,7 +369,7 @@ function actor_on_update()
         end
         if math.random() <= gift_chance then
             local random_gift = gfcmod_tables.get_random_gift()
-            local msg = clr_g .. rnd_companion:character_name() .. ": " .. clr_w .. gt("st_gfcmod_basic" .. math.random(1, random_messages_number))
+            local msg = clr_g .. rnd_companion:character_name() .. ": " .. clr_w .. gt("st_gfcmod_".. get_current_friendship_stage() .. math.random(1, random_messages_number))
             news_manager.send_tip(db.actor, msg, nil, rnd_companion, show_time, rnd_companion:id())
             alife_create_item(random_gift, alife():object(0))
             news_manager.relocate_item(db.actor, "in", random_gift, 1)
