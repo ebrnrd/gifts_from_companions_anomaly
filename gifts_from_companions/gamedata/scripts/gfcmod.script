@@ -1,3 +1,7 @@
+-- CREDITS
+-- thanks to Thanks to Darkasleif and their Chatty Companions Addon that I used to figure out what I was even doing.
+-- thanks to forsiid for the russian translations.
+
 --====================< VARIABLES >====================--
 
 local msg_delay = 1000
@@ -11,6 +15,11 @@ local max_gift_distance = 30 --max distance from companion to player to give gif
 local friendship_timer --time between passive friendship increment
 local current_friendship = 0 --this is only used by gfcmod_tables to get the friendship because using gfcmod_cache_tbl.friendship crashes the game
 local max_friendship = 100
+local temp_friendship = 0
+
+local enemy_table = {}
+local npc_was_enemy
+local area_clear
 
 local random_messages_number = 14
 
@@ -119,6 +128,146 @@ function get_current_friendship()
     return current_friendship
 end
 
+-- code straight up copied from Chatty Companions addon by Darkasleif
+
+function on_enemy_eval(obj, enemy)
+    local id = enemy:id()
+    if enemy_table[id] or not obj:has_info("npcx_is_companion") or not is_enemy(enemy, db.actor, false) then
+        return
+    end
+
+    enemy_table[id] = true
+end
+
+function is_enemy(obj, who, memory) 
+    -- If obj exists
+    if not obj then
+        return false
+    end
+
+    -- If obj and who are the same
+    if obj:id() == who:id() then
+        return false
+    end
+
+    -- If obj is a crow
+    if (obj:clsid() == clsid.crow) then
+		return false 
+	end
+
+    -- If obj is not a mutant or stalker
+    if not IsMonster(obj) and not IsStalker(obj) then
+        return false
+    end
+
+    -- If obj is dead
+    if not obj:alive() then
+        return false
+    end
+
+    if IsStalker(obj) and ((who:id() == 0) or (who:id() == AC_ID)) then
+        local relation = relation_registry.community_relation(character_community(obj), gameplay_disguise.get_default_comm())
+        local goodwill = relation_registry.community_goodwill(character_community(obj), db.actor:id())
+        -- If faction is not enemy and not fighting with actor
+        if not game_relations.is_factions_enemies(obj:character_community(), character_community(db.actor):sub(7)) and not xr_combat_ignore.fighting_with_actor_npcs[obj:id()] then
+            return false
+        end
+
+        -- If obj is companion and not pissed off
+        if obj:has_info("npcx_is_companion") and not xr_combat_ignore.fighting_with_actor_npcs[obj:id()] then
+            return false
+        end
+
+        -- if not gameplay_disguise.is_actor_disguised() and relation + goodwill >= 0 and not xr_combat_ignore.fighting_with_actor_npcs[obj:id()] then
+        --     return false
+        -- end
+
+        -- If player bribe is in effect
+        if xr_bribe.at_peace(character_community(obj), gameplay_disguise.get_default_comm(), obj:position():distance_to(db.actor:position())) and not xr_combat_ignore.fighting_with_actor_npcs[obj:id()] then
+            return false
+        end
+
+        -- If "Rostok Under Duty Control" installed
+        if gameplay_peace_zone and level.name() == "l05_bar" and character_community(db.actor):sub(7) == "army" and (character_community(obj) == "csky" or character_community(obj) == "stalker") and not xr_combat_ignore.fighting_with_actor_npcs[obj:id()] then
+            return false
+        end
+
+        -- If obj has forgotten who
+        if memory then
+            local tg = time_global()
+            local time_in_memory = tg - obj:memory_time(who)
+            if (time_in_memory < 0) then
+                if (time_in_memory < -120000) or (time_in_memory < -60000) then
+                    return false 
+                end
+            else 
+                if (time_in_memory > 120000) or (time_in_memory > 60000) then
+                    return false
+                end
+            end
+        end
+    end
+
+    if IsStalker(obj) then
+        if npc_surrendered(obj) then
+            return false
+        end
+    end
+
+	return true
+end
+
+function npc_surrendered(npc)
+	local st = db.storage[npc:id()]
+	return st and st.victim_surrender and st.victim_surrender >= 0 and st.victim_surrender < 65534 or false
+end
+
+function npc_on_death_callback(obj)
+    local id = obj:id()
+    stored_id = obj:id()
+    if enemy_table[id] then
+        table.remove(enemy_table, id)
+        npc_was_enemy = true
+    else
+        npc_was_enemy = false
+    end
+
+    if obj:has_info("npcx_is_companion") then
+        temp_friendship = temp_friendship - 10
+    end
+
+    if npc_was_enemy then
+        temp_friendship = temp_friendship + 5
+    end
+end
+
+function monster_on_death_callback(obj)
+    id = obj:id()
+    stored_id = obj:id()
+    if enemy_table[id] then
+        table.remove(enemy_table, id)
+        npc_was_enemy = true
+    else
+        npc_was_enemy = false
+    end
+
+    if npc_was_enemy then
+        temp_friendship = temp_friendship + 2
+    end
+end
+
+function in_combat()
+    area_clear = true
+    level.iterate_nearest(db.actor:position(), 50, iterate_func_clear)
+    return not area_clear
+end
+
+function iterate_func_clear(obj)
+    if stored_id ~= obj:id() and obj:id() ~= 0 and is_enemy(obj, db.actor, true) then
+        area_clear = false
+    end
+end
+
 function actor_on_first_update()
     if not gfcmod_cache_tbl.tg_target or gfcmod_cache_tbl.tg_target == 0 then
         gfcmod_cache_tbl.tg_target = 0
@@ -148,7 +297,7 @@ function actor_on_update()
     
     n = n + 1
     
-    if n ~= 1000 then
+    if n ~= 666 then --update frequency
         return
     end
 
@@ -170,6 +319,11 @@ function actor_on_update()
         return
     end
 
+    if temp_friendship and temp_friendship ~= 0 and not in_combat() then
+        add_friendship(temp_friendship, nil)
+        temp_friendship = 0
+    end
+
     if tg >= gfcmod_cache_tbl.tg_friendship_target then
         
         local friendship_increment = get_passive_friendship_increment()
@@ -177,7 +331,7 @@ function actor_on_update()
         calculate_tg_friendship_target()
     end
 
-    if tg >= gfcmod_cache_tbl.tg_target then
+    if tg >= gfcmod_cache_tbl.tg_target and area_clear then
         local rnd_companion = get_random_companion()
         if not rnd_companion or rnd_companion:id() == 0 or distance_between(db.actor,rnd_companion) > max_gift_distance then
             return
@@ -203,6 +357,9 @@ function on_game_start()
     RegisterScriptCallback("on_option_change", on_option_change)
     RegisterScriptCallback("save_state",save_state)
 	RegisterScriptCallback("load_state",load_state)
+    RegisterScriptCallback("npc_on_death_callback", npc_on_death_callback)
+    RegisterScriptCallback("monster_on_death_callback", monster_on_death_callback)
+    RegisterScriptCallback("on_enemy_eval", on_enemy_eval)   
 
     is_first_load = true
 
