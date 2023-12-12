@@ -59,4 +59,17 @@
 		<text>Время для подарка, друг мой! Нашёл кое-что полезное как раз для тебя.</text>
 	</string>
 
+	<string id="st_gfcmod_friendship_increase_basic">
+		<text>Увеличение дружбы:</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_increase_passive">
+		<text>Проведение времени вместе увеличило дружбу в вашем отряде:</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_decrease_basic">
+		<text>Уменьшение дружбы:</text>
+	</string>
+
+
 </string_table>

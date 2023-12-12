@@ -10,7 +10,6 @@
 	<string id="ui_mcm_gfcmod_desc1">
 		<text>Общие настройки</text>
 	</string>
-
 	<string id="ui_mcm_gfcmod_min_timer">
 		<text>Минимальное время до получения нового подарка (секунды)</text>
 	</string>
@@ -23,4 +22,23 @@
 	<string id="ui_mcm_gfcmod_debug_mode">
 		<text>Дебаг мод</text>
 	</string>
+	<string id="ui_mcm_gfcmod_friendship_timer">
+		<text>Время между пассивными увеличениями дружбы (секунды)</text>
+	</string>
+	<string id="ui_mcm_gfcmod_debug_mode">
+		<text>Режим отладки</text>
+	</string>
+	<string id="ui_mcm_gfcmod_friendship_on_npc_death">
+		<text>Приобретение дружбы при убийстве вражеского NPC</text>
+	</string>
+	<string id="ui_mcm_gfcmod_friendship_on_monster_death">
+		<text>Приобретение дружбы при убийстве вражеского мутанта</text>
+	</string>
+	<string id="ui_mcm_gfcmod_friendship_on_companion_death">
+		<text>Потеря дружбы при смерти одного из спутников</text>
+	</string>
+	<string id="ui_mcm_gfcmod_hide_friendship_messages">
+		<text>Скрыть уведомления об изменении уровня дружбы</text>
+	</string>
+
 </string_table>

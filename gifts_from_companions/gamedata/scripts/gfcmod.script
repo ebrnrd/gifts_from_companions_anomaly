@@ -2,38 +2,40 @@
 -- thanks to Thanks to Darkasleif and their Chatty Companions Addon that I used to figure out what I was even doing.
 -- thanks to forsiid for the russian translations.
 
---====================< VARIABLES >====================--
 
-local msg_delay = 1000
-local show_time = 3000
-local debug_mode = false
-
+-- SETTINGS --
 local max_timer --min time between gifts
 local min_timer --max time between gifts
-local gift_chance = 0.5
+local gift_chance -- chance to receive gift
+local friendship_timer -- time between passive friendship increment
+local friendship_on_npc_death
+local friendship_on_monster_death
+local friendship_on_companion_death
+local hide_friendship_messages = false
+local debug_mode = false
+
+-- CONSTANTS --
+local show_time = 3000 -- how long the notifications stay on the screen
 local max_gift_distance = 30 --max distance from companion to player to give gift
-local friendship_timer --time between passive friendship increment
-local current_friendship = 0 --this is only used by gfcmod_tables to get the friendship because using gfcmod_cache_tbl.friendship crashes the game
 local max_friendship = 100
-local temp_friendship = 0
-
-local enemy_table = {}
-local npc_was_enemy
-local area_clear
-
-local random_messages_number = 14
-
-local n = 1
-local is_first_load = false
-
-local gt = game.translate_string
+local random_messages_number = 14 -- the total number of gift phrases in st_gfcmod_messages.xml
 
 local clr_g = utils_xml.get_color("d_green")
 local clr_w = utils_xml.get_color("white")
 
+-- VARIABLES --
+local current_friendship = 0 --this is only used by gfcmod_tables to get the friendship because using gfcmod_cache_tbl.friendship crashes the game
+local temp_friendship = 0 -- value that accumulates while in combat and used to calculate the friendship once combat has ended
+local enemy_table = {} -- table to store enemies around player
+local npc_was_enemy 
+local area_clear
+local n = 1
+local is_first_load = false
+local gt = game.translate_string
+
 local gfcmod_cache_tbl = {} --table with persistent data (friendship, tg_target, tg_friendship_target, tg_last)
 
---=================== FUNCTIONS ====================
+-- FUNCTIONS --
 
 function save_state(m_data)
     m_data.gfcmod_cache_tbl = gfcmod_cache_tbl
@@ -44,20 +46,24 @@ function load_state(m_data)
 end
 
 function on_option_change()
-    min_timer = gfcmod_mcm.get_config("min_timer")
-    max_timer = gfcmod_mcm.get_config("max_timer")
-    gift_chance = gfcmod_mcm.get_config("gift_chance")
-    friendship_timer = gfcmod_mcm.get_config("friendship_timer")
-    debug_mode = gfcmod_mcm.get_config("debug_mode")
+    load_gfc_settings()
     calculate_tg_target()
     calculate_tg_friendship_target()
 end
 
 function on_game_load()
+    load_gfc_settings()
+end
+
+function load_gfc_settings()
     min_timer = gfcmod_mcm.get_config("min_timer")
     max_timer = gfcmod_mcm.get_config("max_timer")
     gift_chance = gfcmod_mcm.get_config("gift_chance")
     friendship_timer = gfcmod_mcm.get_config("friendship_timer")
+    friendship_on_npc_death = gfcmod_mcm.get_config("friendship_on_npc_death")
+    friendship_on_monster_death = gfcmod_mcm.get_config("friendship_on_monster_death")
+    friendship_on_companion_death = gfcmod_mcm.get_config("friendship_on_companion_death")
+    hide_friendship_messages = gfcmod_mcm.get_config("hide_friendship_messages")
     debug_mode = gfcmod_mcm.get_config("debug_mode")
 end
 
@@ -110,7 +116,11 @@ function add_friendship(friendship_to_add, type)
             msg = clr_w .. gt("st_gfcmod_friendship_decrease_" .. type) .. " " .. clr_w .. gfcmod_cache_tbl.friendship .. "/" .. max_friendship
         end 
     end
-    news_manager.send_tip(db.actor, msg, nil, nil, show_time)
+
+    if not hide_friendship_messages then
+        news_manager.send_tip(db.actor, msg, nil, nil, show_time)
+    end
+    
     current_friendship = gfcmod_cache_tbl.friendship
 end
 
@@ -233,11 +243,15 @@ function npc_on_death_callback(obj)
     end
 
     if obj:has_info("npcx_is_companion") then
-        temp_friendship = temp_friendship - 10
+        if friendship_on_companion_death then
+            temp_friendship = temp_friendship - friendship_on_companion_death
+        end
     end
 
     if npc_was_enemy then
-        temp_friendship = temp_friendship + 5
+        if friendship_on_npc_death then
+            temp_friendship = temp_friendship + friendship_on_npc_death
+        end
     end
 end
 
@@ -252,7 +266,9 @@ function monster_on_death_callback(obj)
     end
 
     if npc_was_enemy then
-        temp_friendship = temp_friendship + 2
+        if friendship_on_monster_death then
+            temp_friendship = temp_friendship + friendship_on_monster_death
+        end
     end
 end
 

@@ -5,8 +5,12 @@ function on_mcm_load()
 
 			{id = "min_timer",                  type = "track", val = 2, min=1,     max=900,     step=1,     def = 300},
             {id = "max_timer",                  type = "track", val = 2, min=2,     max=1800,     step=1,     def = 600},
-            {id = "gift_chance",                type = "track", val = 2, min=0,     max=1,     step=0.1,     def = 0.4},
             {id = "friendship_timer",           type = "track", val = 2, min=1,     max=3600,     step=1,     def = 900},
+            {id = "gift_chance",                type = "track", val = 2, min=0,     max=1,     step=0.1,     def = 0.4},
+            {id = "friendship_on_npc_death",    type = "track", val = 2, min=0,     max=100,     step=1,     def = 5},
+            {id = "friendship_on_monster_death",type = "track", val = 2, min=0,     max=100,     step=1,     def = 2},
+            {id = "friendship_on_companion_death",type = "track", val = 2, min=0,     max=100,     step=1,     def = 10},
+            {id = "hide_friendship_messages",   type = "check", val = 1, def=false},
             {id = "debug_mode",                 type = "check", val = 1, def=false},
 		}
     }
@@ -17,8 +21,12 @@ end
 local defaults = {
     ["min_timer"] = 300,
     ["max_timer"] = 600,
-    ["gift_chance"] = 0.4,
     ["friendship_timer"] = 900,
+    ["gift_chance"] = 0.4,
+    ["friendship_on_npc_death"] = 5,
+    ["friendship_on_monster_death"] = 2,
+    ["friendship_on_companion_death"] = 10,
+    ["hide_friendship_messages"] = false,
     ["debug_mode"] = false,
 }
 

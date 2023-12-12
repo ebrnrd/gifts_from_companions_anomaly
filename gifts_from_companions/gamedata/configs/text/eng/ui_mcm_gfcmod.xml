@@ -10,7 +10,6 @@
 	<string id="ui_mcm_gfcmod_desc1">
 		<text>General Settings</text>
 	</string>
-
 	<string id="ui_mcm_gfcmod_min_timer">
 		<text>Minimum time before receiving a new gift (s)</text>
 	</string>
@@ -25,5 +24,17 @@
 	</string>
 	<string id="ui_mcm_gfcmod_debug_mode">
 		<text>Debug mode</text>
+	</string>
+	<string id="ui_mcm_gfcmod_friendship_on_npc_death">
+		<text>Friendship gained when killing an enemy NPC</text>
+	</string>
+	<string id="ui_mcm_gfcmod_friendship_on_monster_death">
+		<text>Friendship gained when killing an enemy mutant</text>
+	</string>
+	<string id="ui_mcm_gfcmod_friendship_on_companion_death">
+		<text>Friendship lost when one companion dies</text>
+	</string>
+	<string id="ui_mcm_gfcmod_hide_friendship_messages">
+		<text>Hide friendship level changes notifications</text>
 	</string>
 </string_table>
