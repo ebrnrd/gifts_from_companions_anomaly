@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="windows-1251"?>
+
+<string_table>
+
+	
+	<string id="gfcmod_task_1_title">
+		<text>Companion Task</text>
+	</string>
+	
+    <string id="gfcmod_task_1_descr">
+		<text>Companion task description</text>
+	</string>	
+
+
+</string_table>
