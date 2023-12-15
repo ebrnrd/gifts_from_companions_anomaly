@@ -1,7 +1,9 @@
 local DIALOG_ID = {}
 local sfind = string.find
 
-local fetch_items = {}
+local stored_task_giver
+
+local fetch_items = {"bandage"}
 local fetch_rank_tier = {}
 
 local patch_general = {
@@ -80,30 +82,6 @@ local faction_lookup = { -- List of factions used in patch tasks
 	"bandit",
 	"monolith"
 }
-
-
----------------------------< Utility >---------------------------
-function postpone_gfcmod_fetch_for_next_frame(task_id, section, amount)
-	if not (task_id and section) then
-		return true
-	end
-	
-	task_id = string.sub(task_id,1,-7) or "" -- because it ends with fetch
-	amount = amount or 1
-	local extra = ""
-	if (ini_sys:r_string_ex(section,"kind") == "i_arty") then
-		extra = " " .. game.translate_string("st_ui_artefact")
-	end
-	
-	local clr = utils_xml.get_color("pda_white") --"%c[255,238,153,26]"
-	local news_caption = game.translate_string("ui_inv_needs") .. ":" --game.translate_string(task_manager.task_ini:r_string_ex(task_id, "title")) or "error"
-	local news_ico = task_manager.task_ini:r_string_ex(task_id, "icon") or "ui_inGame2_D_Sisshik"
-	local news_text = ui_item.get_sec_name(section) .. extra .. clr .. " (x" .. amount .. ")"
-		
-	db.actor:give_talk_message2(news_caption, news_text, news_ico, "iconed_answer_item")
-	
-	return true
-end
 
 
 xr_effects.fetch_reward_and_remove = function(actor, npc, p) --	Remove fetch items and give money reward:
@@ -297,6 +275,28 @@ xr_effects.remove_artefact_item = function(actor,npc,p)
 	end
 end
 
+function show_gfcmod_fetch_task_news(task_id, section, amount)
+	if not (task_id and section) then
+		return true
+	end
+	
+	task_id = string.sub(task_id,1,-7) or "" -- because it ends with fetch
+	amount = amount or 1
+	local extra = ""
+	if (ini_sys:r_string_ex(section,"kind") == "i_arty") then
+		extra = " " .. game.translate_string("st_ui_artefact")
+	end
+	
+	local clr = utils_xml.get_color("pda_white") --"%c[255,238,153,26]"
+	local news_caption = game.translate_string("ui_inv_needs") .. ":" --game.translate_string(task_manager.task_ini:r_string_ex(task_id, "title")) or "error"
+	local news_ico = task_manager.task_ini:r_string_ex(task_id, "icon") or "ui_inGame2_D_Sisshik"
+	local news_text = ui_item.get_sec_name(section) .. extra .. clr .. " (x" .. amount .. ")"
+		
+	db.actor:give_talk_message2(news_caption, news_text, news_ico, "iconed_answer_item")
+	
+	return true
+end
+
 
 
 ---------------------------< Effects >---------------------------
@@ -311,224 +311,221 @@ local function get_suitable_item(tbl,rank)
 	return (#temp > 0) and temp[math.random(#temp)]
 end
 
-xr_effects.setup_gfcmod_fetch_task = function(actor,npc,p) -- setup_supplies_fetch_task
--- Pick a random item from the list:
--- param 1 - var name
--- param 2 - items type
--- param 2 - min count
--- param 3 - max count
-
-	local npc = gfcmod.get_random_companion()
-	local id  = npc and npc:id()
-	local sec = nil
-	local cnt = nil
+xr_effects.setup_gfcmod_gift_task2 = function(actor,npc,p) -- setup_supplies_fetch_task
+	-- Pick a random item from the list:
+	-- param 1 - var name
+	-- param 2 - items type
+	-- param 2 - min count
+	-- param 3 - max count
 	
-	if (sec and ini_sys:section_exist(sec) and cnt) then
-		dialogs._FETCH_TEXT = ui_item.get_sec_name(sec)
-		save_var( db.actor, p[1], sec )
-		save_var( db.actor, (p[1] .. "_count"), cnt )
+		local npc = gfcmod.get_random_companion()
+		local id  = npc and npc:id()
+		local sec = nil
+		local cnt = nil
 
-	else
-		local npc_comm = npc and character_community(npc) or "stalker"
-		local npc_rank = ranks.get_obj_rank_name(npc) or "experienced"
+
+
+
+
+
+
+
+
+
 		
-		local itms = {} -- non-key table
-		
-		-- expand supplies list to include drinks and smoke if the task giver is not monolith
-		if (p[2] == "supplies") and (npc_comm ~= "monolith") then
-			itms = fetch_items["supplies"]
-			for sec,tier in pairs(fetch_items["drink"]) do
-				itms[sec] = tier
-			end
-			
-		-- Gather patches of NPC's enemy factions
-		elseif (p[2] == "patch_general") then
-			local patches = {}
-			for i=1,#faction_lookup do
-				if game_relations.is_factions_enemies(faction_lookup[i], npc_comm) then
-					local comm
-					if (faction_lookup[i] == "killer") then comm = "merc"
-					elseif (faction_lookup[i] == "dolg") then comm = "duty"
-					else comm = faction_lookup[i]
-					end
-					
-					local patch =  comm .. "_patch"
-					patches[patch] = 0
-				end
-			end
-			
-			if is_empty(patches) then
-				patches = patch_general[npc_comm]
-			end
-			
-			itms = patches
-		
-		-- Gather suitable repair kits
-		elseif (p[2] == "repair") then
-		
-			-- Get NPC's weapon
-			local obj_wep = npc:best_weapon()
-			local sec_wep = obj_wep and obj_wep:section()
-			
-			-- Gather proper repair kits
-			local repair_kits = {
-				["sharpening_stones"] = 0,
-				["sewing_kit_b"] = 0,
-			}
-			if sec_wep then
-				local wep_type = ini_sys:r_string_ex(sec_wep,"repair_type") or ""
-				for sec,tier in pairs(fetch_items["repair"]) do
-					local kit_type = parse_list(ini_sys,sec,"repair_only",true)
-					if kit_type[wep_type] then
-						repair_kits[sec] = tier
-					end
-				end
-			end
-			
-			itms = repair_kits
-			
-		-- Gather suitable weapons
-		elseif (p[2] == "weapons") then
-			local f = faction_expansions.faction[npc_comm]
-			local npc_preference = f and f["weapon"] or ""
-			
-			-- Collects weapons suitable for npc rank
-			local wpn_by_rank = {}
-			if fetch_items["weapons_" .. npc_rank] then
-				local tbl = fetch_items["weapons_" .. npc_rank]
-				for sec,tier in pairs(tbl) do
-					wpn_by_rank[sec] = tier
-				end
-			end
-			
-			-- Collects weapons suitable for npc faction
-			local wpn_by_ref = {}
-			if fetch_items["weapons_" .. npc_preference] then
-				local tbl = fetch_items["weapons_" .. npc_preference]
-				for sec,tier in pairs(tbl) do
-					wpn_by_ref[sec] = tier
-				end
-			end
-			
-			-- collect suitable weapons
-			local wpns = {}
-			for sec,tier in pairs(wpn_by_rank) do
-				if wpn_by_ref[sec] then
-					wpns[sec] = tier
-				end
-			end
-			for sec,tier in pairs(wpn_by_ref) do
-				if wpn_by_rank[sec] then
-					wpns[sec] = tier
-				end
-			end
-			
-			if is_not_empty(wpns) then
-				itms = wpns
-			else
-				itms = fetch_items["weapons"]
-			end
+		if (sec and ini_sys:section_exist(sec) and cnt) then
+			dialogs._FETCH_TEXT = ui_item.get_sec_name(sec)
+			save_var( db.actor, p[1], sec )
+			save_var( db.actor, (p[1] .. "_count"), cnt )
+	
 		else
-			itms = fetch_items[p[2]]
+			local npc_comm = npc and character_community(npc) or "stalker"
+			local npc_rank = ranks.get_obj_rank_name(npc) or "experienced"
+			
+			local itms = {} -- non-key table
+			
+			-- expand supplies list to include drinks and smoke if the task giver is not monolith
+			if (p[2] == "supplies") and (npc_comm ~= "monolith") then
+				itms = fetch_items["supplies"]
+				for sec,tier in pairs(fetch_items["drink"]) do
+					itms[sec] = tier
+				end
+				
+			-- Gather patches of NPC's enemy factions
+			elseif (p[2] == "patch_general") then
+				local patches = {}
+				for i=1,#faction_lookup do
+					if game_relations.is_factions_enemies(faction_lookup[i], npc_comm) then
+						local comm
+						if (faction_lookup[i] == "killer") then comm = "merc"
+						elseif (faction_lookup[i] == "dolg") then comm = "duty"
+						else comm = faction_lookup[i]
+						end
+						
+						local patch =  comm .. "_patch"
+						patches[patch] = 0
+					end
+				end
+				
+				if is_empty(patches) then
+					patches = patch_general[npc_comm]
+				end
+				
+				itms = patches
+			
+			-- Gather suitable repair kits
+			elseif (p[2] == "repair") then
+			
+				-- Get NPC's weapon
+				local obj_wep = npc:best_weapon()
+				local sec_wep = obj_wep and obj_wep:section()
+				
+				-- Gather proper repair kits
+				local repair_kits = {
+					["sharpening_stones"] = 0,
+					["sewing_kit_b"] = 0,
+				}
+				if sec_wep then
+					local wep_type = ini_sys:r_string_ex(sec_wep,"repair_type") or ""
+					for sec,tier in pairs(fetch_items["repair"]) do
+						local kit_type = parse_list(ini_sys,sec,"repair_only",true)
+						if kit_type[wep_type] then
+							repair_kits[sec] = tier
+						end
+					end
+				end
+				
+				itms = repair_kits
+				
+			-- Gather suitable weapons
+			elseif (p[2] == "weapons") then
+				local f = faction_expansions.faction[npc_comm]
+				local npc_preference = f and f["weapon"] or ""
+				
+				-- Collects weapons suitable for npc rank
+				local wpn_by_rank = {}
+				if fetch_items["weapons_" .. npc_rank] then
+					local tbl = fetch_items["weapons_" .. npc_rank]
+					for sec,tier in pairs(tbl) do
+						wpn_by_rank[sec] = tier
+					end
+				end
+				
+				-- Collects weapons suitable for npc faction
+				local wpn_by_ref = {}
+				if fetch_items["weapons_" .. npc_preference] then
+					local tbl = fetch_items["weapons_" .. npc_preference]
+					for sec,tier in pairs(tbl) do
+						wpn_by_ref[sec] = tier
+					end
+				end
+				
+				-- collect suitable weapons
+				local wpns = {}
+				for sec,tier in pairs(wpn_by_rank) do
+					if wpn_by_ref[sec] then
+						wpns[sec] = tier
+					end
+				end
+				for sec,tier in pairs(wpn_by_ref) do
+					if wpn_by_rank[sec] then
+						wpns[sec] = tier
+					end
+				end
+				
+				if is_not_empty(wpns) then
+					itms = wpns
+				else
+					itms = fetch_items["weapons"]
+				end
+			else
+				itms = fetch_items[p[2]]
+			end
+			
+			if not (itms and is_not_empty(itms)) then
+				printe("! ERROR: %s | fetch list [%s] is invalid", p[1], p[2])
+			end
+			
+			local min_count = (p[3] and tonumber( p[3] ) or 1)
+			local max_count = (p[4] and tonumber( p[4] ) or min_count)
+			sec = get_suitable_item(itms, npc_rank) or random_key_table(itms)
+			cnt = math.random( min_count, max_count )
+		
+			-- Save chosen fetch item:
+			if (not DIALOG_ID[id]) then DIALOG_ID[id] = {} end
+			if (not DIALOG_ID[id][p[1]]) then DIALOG_ID[id][p[1]] = {} end
+			
+			DIALOG_ID[id][p[1]].sec = sec
+			DIALOG_ID[id][p[1]].cnt = cnt
+			dialogs._FETCH_TEXT = ui_item.get_sec_name(sec)
+			save_var( db.actor, p[1], sec )
+			save_var( db.actor, (p[1] .. "_count"), cnt )
+			printdbg("sec: " .. sec .. "amount: " .. cnt)
+			
 		end
 		
-		if not (itms and is_not_empty(itms)) then
-			printe("! ERROR: %s | fetch list [%s] is invalid", p[1], p[2])
-		end
-		
-		local min_count = (p[3] and tonumber( p[3] ) or 1)
-		local max_count = (p[4] and tonumber( p[4] ) or min_count)
-		sec = get_suitable_item(itms, npc_rank) or random_key_table(itms)
-		cnt = math.random( min_count, max_count )
-	
-		-- Save chosen fetch item:
-		--if (not DIALOG_ID[id]) then DIALOG_ID[id] = {} end
-		--if (not DIALOG_ID[id][p[1]]) then DIALOG_ID[id][p[1]] = {} end
-		
-		--DIALOG_ID[id][p[1]].sec = sec
-		--DIALOG_ID[id][p[1]].cnt = cnt
-		--dialogs._FETCH_TEXT = ui_item.get_sec_name(sec)
-		save_var( db.actor, p[1], sec )
-		save_var( db.actor, (p[1] .. "_count"), cnt )
-		
+		CreateTimeEvent(0,"setup_fetch_task", 0, postpone_fetch_for_next_frame, p[1], sec, cnt)
 	end
-	
-	postpone_gfcmod_fetch_for_next_frame(p[1], sec, cnt)
-end
 
-xr_effects.setup_generic_fetch_task = function(actor,npc,p)
+xr_effects.setup_gfcmod_gift_task = function(actor,npc,p)
 -- param1 - variable name
 -- param2 - count
 -- param3+ - sections
 
 	if (p[1] and p[2] and p[3]) then
-		local npc = get_speaker(true)
-		local id  = npc and npc:id()
-		local sec = DIALOG_ID[id] and DIALOG_ID[id][p[1]] and DIALOG_ID[id][p[1]].sec
-		local cnt = DIALOG_ID[id] and DIALOG_ID[id][p[1]] and DIALOG_ID[id][p[1]].cnt
-		
-		if (sec and cnt and ini_sys:section_exist(sec)) then
-			dialogs._FETCH_TEXT = ui_item.get_sec_name(sec)
+		local sec
+		local cnt
+		sec = p[3]
+		if (sec and ini_sys:section_exist(sec)) then
+			cnt = tonumber(p[2]) or 1
 			save_var( db.actor, p[1], sec )
 			if (cnt > 1) then
 				save_var( db.actor, (p[1] .. "_count"), cnt )
 			end
+			printdbg("setup_gfcmod_gift_task has saved vars: " .. sec .. " " .. cnt .. "at " .. p[1]) 
 		else
-			sec = #p > 3 and p[math.random(3,#p)] or p[3]
-			if (sec and ini_sys:section_exist(sec)) then
-				cnt = tonumber(p[2]) or 1
-
-				-- Save chosen fetch item:
-				if (not DIALOG_ID[id]) then DIALOG_ID[id] = {} end
-				if (not DIALOG_ID[id][p[1]]) then DIALOG_ID[id][p[1]] = {} end
-				
-				DIALOG_ID[id][p[1]].sec = sec
-				DIALOG_ID[id][p[1]].cnt = cnt
-				dialogs._FETCH_TEXT = ui_item.get_sec_name(sec)
-				save_var( db.actor, p[1], sec )
-				if (cnt > 1) then
-					save_var( db.actor, (p[1] .. "_count"), cnt )
-				end
-			else
-				printe("!ERROR: xr_effects:setup_generic_fetch_task - invalid section %s",sec)
-			end
+			printe("!ERROR: xr_effects:setup_gfcmod_gift_task - invalid section %s",sec)
 		end
-		
-		CreateTimeEvent(0,"setup_fetch_task", 0, postpone_fetch_for_next_frame, p[1], sec, cnt)
 	end
+		
 end
 
 
 ---------------------------< Target functor >---------------------------
-task_functor.gfcmod_fetch_task = function(task_id,field,p,tsk)
+task_functor.gfcmod_gift_task = function(task_id,field,p,tsk)
 	if (field == "title") then
-		local fetch = db.actor and ui_item.get_sec_name(load_var(db.actor,task_id.."_fetch",""))
-		local count = fetch and load_var(db.actor,task_id.."_fetch_count") or 1
+		local fetch = db.actor and ui_item.get_sec_name(load_var(db.actor,task_id,""))
+		local count = fetch and load_var(db.actor,task_id.."_count") or 1
 		if (count > 1) then
-			return strformat((game.translate_string(p) or ""),fetch .. " x" .. tostring(count))
+			return strformat((game.translate_string("gfcmod_gift_task_1_title") or ""),fetch .. " x" .. tostring(count))
 		end
-		return strformat(game.translate_string(p) or "",fetch)
+		return strformat(game.translate_string("gfcmod_gift_task_1_title") or "",fetch)
 	elseif (field == "descr") then
 		if (tsk.stage == 1) then
 			return game.translate_string("st_return_for_reward")
 		end
-		local fetch = db.actor and ui_item.get_sec_name(load_var(db.actor,task_id.."_fetch",""))
-		local count = fetch and load_var(db.actor,task_id.."_fetch_count") or 1
+		local fetch = db.actor and ui_item.get_sec_name(load_var(db.actor,task_id,""))
+		local count = fetch and load_var(db.actor,task_id.."_count") or 1
 		if (count > 1) then
-			return strformat((game.translate_string(p) or ""),fetch .. " x" .. tostring(count))
+			return strformat((game.translate_string("gfcmod_gift_task_1_descr") or ""),fetch .. " x" .. tostring(count))
 		end
 		return strformat(game.translate_string(p) or "",fetch)
 	elseif (field == "target") then
 		if (tsk.stage == 1) then
-			local id = db.actor and load_var(db.actor,task_id.."_target_id") or tsk.task_giver_id
+			local id = tsk.task_giver_id
 			if (id) then
+				printdbg("gfcmod_functor, task_giver_id is: " .. id)
 				return id
 			end
-			local story_id = string.sub(task_id,1,string.find(task_id,"_task")-1)
-			local se_obj = get_story_se_object(story_id)
-			if (se_obj) then
-				return se_obj.id
-			end
+		end			
+	end
+end
+
+function task_functor.gfcmod_gift_task_target_f(task_id,field,p,tsk)
+	if (tsk.stage == 1) then
+		local id = tsk.task_giver_id
+		if (id) then
+			return id
 		end
 	end
 end
@@ -536,45 +533,26 @@ end
 
 
 ---------------------------< Status functor >---------------------------
-task_status_functor.actor_has_gfcmod_fetch_item = function(tsk,task_id)
+task_status_functor.actor_has_gfcmod_gift_item = function(tsk,task_id)
 	local actor = db.actor
-	local section = actor and load_var(actor,task_id.."_fetch")
+	local section = actor and load_var(actor,task_id)
 	if (not section) then
 		return
 	end
 	
 	local item = section and actor:object(section)
 	if (item ~= nil) then 
-		if (task_id == "esc_2_12_stalker_nimble_task_1" or task_id == "jup_b220_trapper_task_3") then 
-			if (item:condition() >= 0.9) then 
+		local count = load_var(actor,task_id.."_count")
+		if (count and count > 1) then
+			local cnt = utils_item.get_amount(db.actor, section, 1)
+			if (cnt >= count) then
 				tsk.stage = 1
-			else 
+			else
 				tsk.stage = 0
 			end
-		else 
-			local count = load_var(actor,task_id.."_fetch_count")
-			if (count and count > 1) then
-			 	local cnt = utils_item.get_amount(db.actor, section, 1)
-				if (cnt >= count) then
-					tsk.stage = 1
-				else
-					tsk.stage = 0
-				end
-				return
-			end
-			tsk.stage = 1 -- should never happen but in such case let player finish quest for free
-		end 
-		
-	elseif section and sfind(section,"af_") then
-		if actor:object(section .. "_af_aam")
-		or actor:object(section .. "_af_iam")
-		or actor:object(section .. "_af_aac")
-		or actor:object(section .. "_lead_box")
-		then
-			tsk.stage = 1
-		else
-			tsk.stage = 0 
+			return
 		end
+		tsk.stage = 1 -- should never happen but in such case let player finish quest for free
 	else 
 		tsk.stage = 0 
 	end 

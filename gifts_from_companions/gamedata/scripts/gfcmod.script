@@ -32,6 +32,7 @@ local area_clear = true
 local n = 1
 local is_first_load = false
 local gt = game.translate_string
+local has_companion_task = false
 
 local gfcmod_cache_tbl = {} --table with persistent data (friendship, tg_target, tg_friendship_target, tg_last)
 
@@ -155,12 +156,11 @@ end
 
 function start_gfcmod_fetch_task()
     local npc = get_random_companion()
-    if not npc then
-        return
-    end
     local se_obj = npc and alife( ):object( npc:id( ) )
-	local giver_id = se_obj and (se_obj.group_id ~= 65535 and se_obj.group_id or se_obj.id)
-	task_manager.get_task_manager( ):give_task("gfcmod_task_1", giver_id)
+	local giver_id = se_obj and se_obj.id
+    task_manager.get_task_manager( ):give_task( "simulation_task_gfcmod_gift_1", giver_id )
+    has_companion_task = true
+
 end
 
 -- code straight up copied from Chatty Companions addon by Darkasleif
