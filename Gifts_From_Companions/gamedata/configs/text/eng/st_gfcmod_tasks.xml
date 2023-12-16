@@ -2,25 +2,37 @@
 
 <string_table>
 
+	<string id="gfcmod_gift_task_1_title_static">
+		<text>Companion request</text>
+	</string>
+
+	<string id="gfcmod_gift_task_1_descr_static">
+		<text>One of your companions has a request for you</text>
+	</string>	
+
 	
 	<string id="gfcmod_gift_task_1_title">
-		<text>Companion Task: Find %s for your companion</text>
+		<text>Companion request: find %s for %s</text>
 	</string>
 	
     <string id="gfcmod_gift_task_1_descr">
-		<text>My companion needs %s and has asked me to bring him some.</text>
+		<text>%s needs %s and has asked me to bring them some</text>
 	</string>	
 
 	<string id="gfcmod_gift_task_1_about">
-		<text>This is the job description</text>
+		<text>This is the request about</text>
+	</string>
+
+	<string id="gfcmod_gift_task_1_job">
+		<text>This is the request job</text>
 	</string>
 
 	<string id="gfcmod_gift_task_1_fetch_about">
 		<text>This is the fetch description</text>
 	</string>
 
-	<string id="gfcmod_gift_task_1_fetch_finish">
-		<text>This is when I finished the task?</text>
+	<string id="gfcmod_gift_task_1_finish">
+		<text>Thank you my friend, I appreciate it. I really do.</text>
 	</string>
 
 </string_table>

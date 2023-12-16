@@ -12,6 +12,8 @@ local friendship_on_npc_death
 local friendship_on_monster_death
 local friendship_on_companion_death
 local hide_friendship_messages = false
+local companions_quests_toggle
+local task_timer
 local debug_mode = false
 
 -- CONSTANTS --
@@ -34,7 +36,7 @@ local is_first_load = false
 local gt = game.translate_string
 local has_companion_task = false
 
-local gfcmod_cache_tbl = {} --table with persistent data (friendship, tg_target, tg_friendship_target, tg_last)
+local gfcmod_cache_tbl = {} --table with persistent data (friendship, tg_gift_target, tg_friendship_target, tg_last)
 
 -- FUNCTIONS --
 
@@ -48,8 +50,9 @@ end
 
 function on_option_change()
     load_gfc_settings()
-    calculate_tg_target()
+    calculate_tg_gift_target()
     calculate_tg_friendship_target()
+    calculate_tg_task_target()
 end
 
 function on_game_load()
@@ -65,6 +68,8 @@ function load_gfc_settings()
     friendship_on_monster_death = gfcmod_mcm.get_config("friendship_on_monster_death")
     friendship_on_companion_death = gfcmod_mcm.get_config("friendship_on_companion_death")
     hide_friendship_messages = gfcmod_mcm.get_config("hide_friendship_messages")
+    companions_quests_toggle = gfcmod_mcm.get_config("companions_quests_toggle")
+    task_timer = gfcmod_mcm.get_config("task_timer")
     debug_mode = gfcmod_mcm.get_config("debug_mode")
 end
 
@@ -89,6 +94,10 @@ end
 function add_friendship(friendship_to_add, type)
 
     local msg 
+
+    if not gfcmod_cache_tbl.friendship then
+        return
+    end
 
     if friendship_to_add == 0 then
         return
@@ -125,14 +134,19 @@ function add_friendship(friendship_to_add, type)
     current_friendship = gfcmod_cache_tbl.friendship
 end
 
-function calculate_tg_target()
+function calculate_tg_gift_target()
     local tg = time_global()
-    gfcmod_cache_tbl.tg_target = tg + math.random(min_timer*1000, max_timer*1000)
+    gfcmod_cache_tbl.tg_gift_target = tg + math.random(min_timer*1000, max_timer*1000)
 end
 
 function calculate_tg_friendship_target()
     local tg = time_global()
     gfcmod_cache_tbl.tg_friendship_target = tg + friendship_timer*1000
+end
+
+function calculate_tg_task_target()
+    local tg = time_global()
+    gfcmod_cache_tbl.tg_task_target = tg + task_timer*1000
 end
 
 function get_current_friendship()
@@ -154,14 +168,19 @@ function get_current_friendship_stage()
     end
 end
 
-function start_gfcmod_fetch_task()
+function start_gfcmod_gift_task()
     local npc = get_random_companion()
+    gfcmod_tasks.set_stored_npc_task_giver(npc)
     local se_obj = npc and alife( ):object( npc:id( ) )
 	local giver_id = se_obj and se_obj.id
-    task_manager.get_task_manager( ):give_task( "simulation_task_gfcmod_gift_1", giver_id )
-    has_companion_task = true
-
+    task_manager.get_task_manager():give_task("simulation_task_gfcmod_gift_1", giver_id)
 end
+
+function reset_gfcmod_companion_task()
+    gfcmod_cache_tbl.companion_task_active = false
+    calculate_tg_task_target()
+end
+
 
 -- code straight up copied from Chatty Companions addon by Darkasleif
 
@@ -310,12 +329,15 @@ function iterate_func_clear(obj)
 end
 
 function actor_on_first_update()
-    if not gfcmod_cache_tbl.tg_target or gfcmod_cache_tbl.tg_target == 0 then
-        gfcmod_cache_tbl.tg_target = 0
-        calculate_tg_target()
+
+    load_gfc_settings()
+
+    if not gfcmod_cache_tbl.tg_gift_target or gfcmod_cache_tbl.tg_gift_target == 0 then
+        gfcmod_cache_tbl.tg_gift_target = 0
+        calculate_tg_gift_target()
     elseif is_first_load and gfcmod_cache_tbl.tg_last and gfcmod_cache_tbl.tg_last ~= 0 then
         local tg = time_global()
-        gfcmod_cache_tbl.tg_target = gfcmod_cache_tbl.tg_target - (gfcmod_cache_tbl.tg_last - tg)
+        gfcmod_cache_tbl.tg_gift_target = gfcmod_cache_tbl.tg_gift_target - (gfcmod_cache_tbl.tg_last - tg)
     end
         
     if not gfcmod_cache_tbl.tg_friendship_target or gfcmod_cache_tbl.tg_friendship_target == 0 then
@@ -324,6 +346,20 @@ function actor_on_first_update()
     elseif is_first_load and gfcmod_cache_tbl.tg_last and gfcmod_cache_tbl.tg_last ~= 0 then
         local tg = time_global()
         gfcmod_cache_tbl.tg_friendship_target = gfcmod_cache_tbl.tg_friendship_target - (gfcmod_cache_tbl.tg_last - tg)
+    end
+
+    if not gfcmod_cache_tbl.tg_task_target or gfcmod_cache_tbl.tg_task_target == 0 then
+        gfcmod_cache_tbl.tg_task_target = 0
+        calculate_tg_task_target()
+    elseif is_first_load and gfcmod_cache_tbl.tg_last and gfcmod_cache_tbl.tg_last ~= 0 then
+        local tg = time_global()
+        gfcmod_cache_tbl.tg_task_target = gfcmod_cache_tbl.tg_task_target - (gfcmod_cache_tbl.tg_last - tg)
+    end
+
+    if not gfcmod_cache_tbl.companion_task_active or gfcmod_cache_tbl.companion_task_active == false then
+        gfcmod_cache_tbl.companion_task_active = false
+    elseif gfcmod_cache_tbl.companion_task_active and gfcmod_cache_tbl.companion_task_active == true then
+        gfcmod_cache_tbl.companion_task_active = true -- i know this doesn't make sense, i'm just paranoid
     end
 
     if not gfcmod_cache_tbl.friendship or gfcmod_cache_tbl.friendship == 0 then
@@ -338,7 +374,7 @@ function actor_on_update()
     
     n = n + 1
     
-    if n ~= 666 then --update frequency
+    if n ~= 105 then --update frequency
         return
     end
 
@@ -346,47 +382,50 @@ function actor_on_update()
     local tg = time_global()
     
     gfcmod_cache_tbl.tg_last = tg -- the engine everytime the actual game is opened, resets the global times, this helps to calculate the delta from the tg from last session
-   
-    if debug_mode then  -- DEBUGGING
-        local msg_debug = clr_g .. "current time: " .. tg .. " ".. "gift time: " .. gfcmod_cache_tbl.tg_target
-        news_manager.send_tip(db.actor, msg_debug, nil, nil, show_time)
-        local msg_debug = clr_g .. "current time: " .. tg .. " ".. "friendship time: " .. gfcmod_cache_tbl.tg_friendship_target
-        news_manager.send_tip(db.actor, msg_debug, nil, nil, show_time)
-    end
-
+    
     if axr_companions.get_companion_count() == 0 then
         gfcmod_cache_tbl.friendship = 0
         current_friendship = gfcmod_cache_tbl.friendship
         return
     end
 
-    if temp_friendship and temp_friendship ~= 0 and not in_combat() then
+    if debug_mode then  -- DEBUGGING
+        local msg_debug = clr_g .. "current time: " .. tg .. " ".. "gift time: " .. gfcmod_cache_tbl.tg_gift_target
+        news_manager.send_tip(db.actor, msg_debug, nil, nil, show_time)
+        local msg_debug = clr_g .. "current time: " .. tg .. " ".. "friendship time: " .. gfcmod_cache_tbl.tg_friendship_target
+        news_manager.send_tip(db.actor, msg_debug, nil, nil, show_time)
+    end
+
+
+    if temp_friendship and temp_friendship ~= 0 then
         add_friendship(temp_friendship, nil)
         temp_friendship = 0
     end
 
-    if tg >= gfcmod_cache_tbl.tg_friendship_target then
-        
+    if tg >= gfcmod_cache_tbl.tg_friendship_target then  
         local friendship_increment = get_passive_friendship_increment()
         add_friendship(friendship_increment, "passive")
         calculate_tg_friendship_target()
     end
 
-    if tg >= gfcmod_cache_tbl.tg_target and area_clear then
+    if tg >= gfcmod_cache_tbl.tg_gift_target and area_clear then
         local rnd_companion = get_random_companion()
-        if not rnd_companion or rnd_companion:id() == 0 or distance_between(db.actor,rnd_companion) > max_gift_distance then
-            return
+        if rnd_companion and rnd_companion:id() ~= 0 and distance_between(db.actor,rnd_companion) <= max_gift_distance then
+            if math.random() <= gift_chance then
+                local random_gift = gfcmod_tables.get_random_gift()
+                local msg = clr_g .. rnd_companion:character_name() .. ": " .. clr_w .. gt("st_gfcmod_".. get_current_friendship_stage() .. math.random(1, random_messages_number))
+                news_manager.send_tip(db.actor, msg, nil, rnd_companion, show_time, rnd_companion:id())
+                alife_create_item(random_gift, alife():object(0))
+                news_manager.relocate_item(db.actor, "in", random_gift, 1)
+            end
+            calculate_tg_gift_target()
         end
-        if math.random() <= gift_chance then
-            local random_gift = gfcmod_tables.get_random_gift()
-            local msg = clr_g .. rnd_companion:character_name() .. ": " .. clr_w .. gt("st_gfcmod_".. get_current_friendship_stage() .. math.random(1, random_messages_number))
-            news_manager.send_tip(db.actor, msg, nil, rnd_companion, show_time, rnd_companion:id())
-            alife_create_item(random_gift, alife():object(0))
-            news_manager.relocate_item(db.actor, "in", random_gift, 1)
+    end
 
-            start_gfcmod_fetch_task()
-        end
-        calculate_tg_target()
+    if tg >= gfcmod_cache_tbl.tg_task_target and not gfcmod_cache_tbl.companion_task_active and companions_quests_toggle then
+        start_gfcmod_gift_task()
+        gfcmod_cache_tbl.companion_task_active = true
+        calculate_tg_task_target()
     end
 
 end

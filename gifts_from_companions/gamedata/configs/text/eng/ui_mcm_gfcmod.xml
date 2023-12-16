@@ -37,4 +37,10 @@
 	<string id="ui_mcm_gfcmod_hide_friendship_messages">
 		<text>Hide friendship level changes notifications</text>
 	</string>
+	<string id="ui_mcm_gfcmod_task_timer">
+		<text>Seconds that need to pass before receiving a new companion task</text>
+	</string>
+	<string id="ui_mcm_gfcmod_companions_quests_toggle">
+		<text>Toggle on or off the automatic quests from companions</text>
+	</string>
 </string_table>

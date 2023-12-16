@@ -1,9 +1,10 @@
 local DIALOG_ID = {}
 local sfind = string.find
 
-local stored_task_giver
+local stored_npc_task_giver
+local gfcmod_tasks_cache_tbl = {}
 
-local fetch_items = {"bandage"}
+local fetch_items = {}
 local fetch_rank_tier = {}
 
 local patch_general = {
@@ -83,8 +84,27 @@ local faction_lookup = { -- List of factions used in patch tasks
 	"monolith"
 }
 
+function set_stored_npc_task_giver(npc)
+	if npc then
+		stored_npc_task_giver = npc
+		gfcmod_tasks_cache_tbl.task_giver_name = stored_npc_task_giver:character_name()
+	end
+end
 
-xr_effects.fetch_reward_and_remove = function(actor, npc, p) --	Remove fetch items and give money reward:
+xr_effects.gfcmod_complete_task_inc_friendship = function(actor, npc, p)
+	local friendship_to_add = p[1] and tonumber(p[1])
+	gfcmod.add_friendship(friendship_to_add)
+end
+
+
+xr_effects.reset_gfcmod_companion_task = function (actor, npc, p)
+	gfcmod.reset_gfcmod_companion_task()
+	printdbg("Resetted gfcmod companion task")
+end
+	
+
+
+xr_effects.gfcmod_gift_reward_and_remove = function(actor, npc, p) --	Remove fetch items and give money reward:
 --	Description:  Removes fetch task items and gives actor money reward based on item value
 --	Usage: fetch_reward_and_remove( p[1]:p[2] )
 --	Parameters:
@@ -177,14 +197,17 @@ xr_effects.fetch_reward_and_remove = function(actor, npc, p) --	Remove fetch ite
 		end
 		--
 		
-		local delta =  math.floor(total_cost * 0.1)
-		local min_reward = (total_cost - delta)
-		local max_reward = (total_cost + delta)
-		
-		xr_effects.reward_random_money( actor, npc, { min_reward , max_reward } )
+		--local delta =  math.floor(total_cost * 0.1)
+		--local min_reward = (total_cost - delta)
+		--local max_reward = (total_cost + delta)
+		--local random_reward = math.random(min_reward, max_reward)
+		local friendship_to_add = math.floor(total_cost / 500)
+		if friendship_to_add > 0 then
+			gfcmod.add_friendship(friendship_to_add)
+		end
 	
 		-- Give task items to npc
-		local trade_npc = false --get_speaker()
+		local trade_npc = stored_npc_task_giver
 		for k,v in pairs(collected_itms) do
 			if trade_npc then
 				local obj = level.object_by_id(k)
@@ -212,15 +235,15 @@ xr_effects.fetch_reward_and_remove = function(actor, npc, p) --	Remove fetch ite
 	CreateTimeEvent(0,"delay_reward", 1, timer)
 end
 
-xr_effects.remove_fetch_item = function(actor,npc,p)
+xr_effects.remove_gift_item = function(actor,npc,p)
 	local section = load_var(db.actor,p[1])
 	if (section and db.actor:object(section)) then
 		local amt = p[2] or load_var(db.actor,p[1].."_count") or 1
-		local trade_npc = get_speaker()
-		if (trade_npc) then 
+		local companion_npc = stored_npc_task_giver
+		if (companion_npc) then 
 			local function transfer_object_item(itm)
 				if (itm:section() == section and amt > 0) then
-					db.actor:transfer_item(itm, trade_npc)
+					db.actor:transfer_item(itm, companion_npc)
 					amt = amt - 1
 				end
 				if (amt <= 0) then 
@@ -297,15 +320,13 @@ function show_gfcmod_fetch_task_news(task_id, section, amount)
 	return true
 end
 
-
-
 ---------------------------< Effects >---------------------------
 local function get_suitable_item(tbl,rank)
 	local temp = {}
 	for sec,tier in pairs(tbl) do
 		if (not rank) or (rank and fetch_rank_tier[rank] and fetch_rank_tier[rank][tier]) then
 			temp[#temp + 1] = sec
-			--printf("- Fetch items | found proper item [%s] tier (%s) for rank (%s)", sec, tier, rank)
+			printf("- Fetch items | found proper item [%s] tier (%s) for rank (%s)", sec, tier, rank)
 		end
 	end
 	return (#temp > 0) and temp[math.random(#temp)]
@@ -317,155 +338,127 @@ xr_effects.setup_gfcmod_gift_task2 = function(actor,npc,p) -- setup_supplies_fet
 	-- param 2 - items type
 	-- param 2 - min count
 	-- param 3 - max count
-	
-		local npc = gfcmod.get_random_companion()
-		local id  = npc and npc:id()
-		local sec = nil
-		local cnt = nil
+	local npc = stored_npc_task_giver
+	local id  = npc and npc:id()
+	local npc_comm = npc and character_community(npc) or "stalker"
+	local npc_rank = ranks.get_player_rank_name() or "novice"
+	local sec
+	local cnt
 
-
-
-
-
-
-
-
-
-
-		
-		if (sec and ini_sys:section_exist(sec) and cnt) then
-			dialogs._FETCH_TEXT = ui_item.get_sec_name(sec)
-			save_var( db.actor, p[1], sec )
-			save_var( db.actor, (p[1] .. "_count"), cnt )
-	
-		else
-			local npc_comm = npc and character_community(npc) or "stalker"
-			local npc_rank = ranks.get_obj_rank_name(npc) or "experienced"
+	local itms = {} -- non-key table
 			
-			local itms = {} -- non-key table
-			
-			-- expand supplies list to include drinks and smoke if the task giver is not monolith
-			if (p[2] == "supplies") and (npc_comm ~= "monolith") then
-				itms = fetch_items["supplies"]
-				for sec,tier in pairs(fetch_items["drink"]) do
-					itms[sec] = tier
-				end
-				
-			-- Gather patches of NPC's enemy factions
-			elseif (p[2] == "patch_general") then
-				local patches = {}
-				for i=1,#faction_lookup do
-					if game_relations.is_factions_enemies(faction_lookup[i], npc_comm) then
-						local comm
-						if (faction_lookup[i] == "killer") then comm = "merc"
-						elseif (faction_lookup[i] == "dolg") then comm = "duty"
-						else comm = faction_lookup[i]
-						end
-						
-						local patch =  comm .. "_patch"
-						patches[patch] = 0
-					end
-				end
-				
-				if is_empty(patches) then
-					patches = patch_general[npc_comm]
-				end
-				
-				itms = patches
-			
-			-- Gather suitable repair kits
-			elseif (p[2] == "repair") then
-			
-				-- Get NPC's weapon
-				local obj_wep = npc:best_weapon()
-				local sec_wep = obj_wep and obj_wep:section()
-				
-				-- Gather proper repair kits
-				local repair_kits = {
-					["sharpening_stones"] = 0,
-					["sewing_kit_b"] = 0,
-				}
-				if sec_wep then
-					local wep_type = ini_sys:r_string_ex(sec_wep,"repair_type") or ""
-					for sec,tier in pairs(fetch_items["repair"]) do
-						local kit_type = parse_list(ini_sys,sec,"repair_only",true)
-						if kit_type[wep_type] then
-							repair_kits[sec] = tier
-						end
-					end
-				end
-				
-				itms = repair_kits
-				
-			-- Gather suitable weapons
-			elseif (p[2] == "weapons") then
-				local f = faction_expansions.faction[npc_comm]
-				local npc_preference = f and f["weapon"] or ""
-				
-				-- Collects weapons suitable for npc rank
-				local wpn_by_rank = {}
-				if fetch_items["weapons_" .. npc_rank] then
-					local tbl = fetch_items["weapons_" .. npc_rank]
-					for sec,tier in pairs(tbl) do
-						wpn_by_rank[sec] = tier
-					end
-				end
-				
-				-- Collects weapons suitable for npc faction
-				local wpn_by_ref = {}
-				if fetch_items["weapons_" .. npc_preference] then
-					local tbl = fetch_items["weapons_" .. npc_preference]
-					for sec,tier in pairs(tbl) do
-						wpn_by_ref[sec] = tier
-					end
-				end
-				
-				-- collect suitable weapons
-				local wpns = {}
-				for sec,tier in pairs(wpn_by_rank) do
-					if wpn_by_ref[sec] then
-						wpns[sec] = tier
-					end
-				end
-				for sec,tier in pairs(wpn_by_ref) do
-					if wpn_by_rank[sec] then
-						wpns[sec] = tier
-					end
-				end
-				
-				if is_not_empty(wpns) then
-					itms = wpns
-				else
-					itms = fetch_items["weapons"]
-				end
-			else
-				itms = fetch_items[p[2]]
-			end
-			
-			if not (itms and is_not_empty(itms)) then
-				printe("! ERROR: %s | fetch list [%s] is invalid", p[1], p[2])
-			end
-			
-			local min_count = (p[3] and tonumber( p[3] ) or 1)
-			local max_count = (p[4] and tonumber( p[4] ) or min_count)
-			sec = get_suitable_item(itms, npc_rank) or random_key_table(itms)
-			cnt = math.random( min_count, max_count )
-		
-			-- Save chosen fetch item:
-			if (not DIALOG_ID[id]) then DIALOG_ID[id] = {} end
-			if (not DIALOG_ID[id][p[1]]) then DIALOG_ID[id][p[1]] = {} end
-			
-			DIALOG_ID[id][p[1]].sec = sec
-			DIALOG_ID[id][p[1]].cnt = cnt
-			dialogs._FETCH_TEXT = ui_item.get_sec_name(sec)
-			save_var( db.actor, p[1], sec )
-			save_var( db.actor, (p[1] .. "_count"), cnt )
-			printdbg("sec: " .. sec .. "amount: " .. cnt)
-			
+	-- expand supplies list to include drinks and smoke if the task giver is not monolith
+	if (p[2] == "supplies") and (npc_comm ~= "monolith") then
+		itms = fetch_items["supplies"]
+		for sec,tier in pairs(fetch_items["drink"]) do
+			itms[sec] = tier
 		end
 		
-		CreateTimeEvent(0,"setup_fetch_task", 0, postpone_fetch_for_next_frame, p[1], sec, cnt)
+	-- Gather patches of NPC's enemy factions
+	elseif (p[2] == "patch_general") then
+		local patches = {}
+		for i=1,#faction_lookup do
+			if game_relations.is_factions_enemies(faction_lookup[i], npc_comm) then
+				local comm
+				if (faction_lookup[i] == "killer") then comm = "merc"
+				elseif (faction_lookup[i] == "dolg") then comm = "duty"
+				else comm = faction_lookup[i]
+				end
+				
+				local patch =  comm .. "_patch"
+				patches[patch] = 0
+			end
+		end
+		
+		if is_empty(patches) then
+			patches = patch_general[npc_comm]
+		end
+		
+		itms = patches
+	
+	-- Gather suitable repair kits
+	elseif (p[2] == "repair") then
+	
+		-- Get NPC's weapon
+		local obj_wep = npc:best_weapon()
+		local sec_wep = obj_wep and obj_wep:section()
+		
+		-- Gather proper repair kits
+		local repair_kits = {
+			["sharpening_stones"] = 0,
+			["sewing_kit_b"] = 0,
+		}
+		if sec_wep then
+			local wep_type = ini_sys:r_string_ex(sec_wep,"repair_type") or ""
+			for sec,tier in pairs(fetch_items["repair"]) do
+				local kit_type = parse_list(ini_sys,sec,"repair_only",true)
+				if kit_type[wep_type] then
+					repair_kits[sec] = tier
+				end
+			end
+		end
+			
+		itms = repair_kits
+			
+	-- Gather suitable weapons
+	elseif (p[2] == "weapons") then
+		local f = faction_expansions.faction[npc_comm]
+		local npc_preference = f and f["weapon"] or ""
+		
+		-- Collects weapons suitable for npc rank
+		local wpn_by_rank = {}
+		if fetch_items["weapons_" .. npc_rank] then
+			local tbl = fetch_items["weapons_" .. npc_rank]
+			for sec,tier in pairs(tbl) do
+				wpn_by_rank[sec] = tier
+			end
+		end
+		
+		-- Collects weapons suitable for npc faction
+		local wpn_by_ref = {}
+		if fetch_items["weapons_" .. npc_preference] then
+			local tbl = fetch_items["weapons_" .. npc_preference]
+			for sec,tier in pairs(tbl) do
+				wpn_by_ref[sec] = tier
+			end
+		end
+		
+		-- collect suitable weapons
+		local wpns = {}
+		for sec,tier in pairs(wpn_by_rank) do
+			if wpn_by_ref[sec] then
+				wpns[sec] = tier
+			end
+		end
+		for sec,tier in pairs(wpn_by_ref) do
+			if wpn_by_rank[sec] then
+				wpns[sec] = tier
+			end
+		end
+		
+		if is_not_empty(wpns) then
+			itms = wpns
+		else
+			itms = fetch_items["weapons"]
+		end
+	else
+		itms = fetch_items[p[2]]
 	end
+	
+	if not (itms and is_not_empty(itms)) then
+		printe("! ERROR: %s | fetch list [%s] is invalid", p[1], p[2])
+	end
+	
+	local min_count = (p[3] and tonumber( p[3] ) or 1)
+	local max_count = (p[4] and tonumber( p[4] ) or min_count)
+	sec = get_suitable_item(itms, npc_rank) or random_key_table(itms)
+	cnt = math.random( min_count, max_count )
+
+	save_var( db.actor, p[1], sec )
+	save_var( db.actor, (p[1] .. "_count"), cnt )
+	printdbg("sec: " .. sec .. "amount: " .. cnt)
+
+end	
 
 xr_effects.setup_gfcmod_gift_task = function(actor,npc,p)
 -- param1 - variable name
@@ -475,7 +468,7 @@ xr_effects.setup_gfcmod_gift_task = function(actor,npc,p)
 	if (p[1] and p[2] and p[3]) then
 		local sec
 		local cnt
-		sec = p[3]
+		sec = #p > 3 and p[math.random(3,#p)] or p[3]
 		if (sec and ini_sys:section_exist(sec)) then
 			cnt = tonumber(p[2]) or 1
 			save_var( db.actor, p[1], sec )
@@ -490,37 +483,38 @@ xr_effects.setup_gfcmod_gift_task = function(actor,npc,p)
 		
 end
 
-
----------------------------< Target functor >---------------------------
-task_functor.gfcmod_gift_task = function(task_id,field,p,tsk)
-	if (field == "title") then
-		local fetch = db.actor and ui_item.get_sec_name(load_var(db.actor,task_id,""))
-		local count = fetch and load_var(db.actor,task_id.."_count") or 1
-		if (count > 1) then
-			return strformat((game.translate_string("gfcmod_gift_task_1_title") or ""),fetch .. " x" .. tostring(count))
-		end
-		return strformat(game.translate_string("gfcmod_gift_task_1_title") or "",fetch)
-	elseif (field == "descr") then
-		if (tsk.stage == 1) then
-			return game.translate_string("st_return_for_reward")
-		end
-		local fetch = db.actor and ui_item.get_sec_name(load_var(db.actor,task_id,""))
-		local count = fetch and load_var(db.actor,task_id.."_count") or 1
-		if (count > 1) then
-			return strformat((game.translate_string("gfcmod_gift_task_1_descr") or ""),fetch .. " x" .. tostring(count))
-		end
-		return strformat(game.translate_string(p) or "",fetch)
-	elseif (field == "target") then
-		if (tsk.stage == 1) then
-			local id = tsk.task_giver_id
-			if (id) then
-				printdbg("gfcmod_functor, task_giver_id is: " .. id)
-				return id
-			end
-		end			
+-- TITLE FUNCTORS
+function task_functor.gfcmod_gift_task_title_f(task_id,field,p,tsk)
+	local fetch = db.actor and ui_item.get_sec_name(load_var(db.actor,task_id,""))
+	local count = fetch and load_var(db.actor,task_id.."_count") or 1
+	local companion_name = gfcmod_tasks_cache_tbl and gfcmod_tasks_cache_tbl.task_giver_name or "your companion"
+	if not fetch or fetch == "" or not count then
+		return strformat(game.translate_string("gfcmod_gift_task_1_title_static"))
 	end
+	if (count > 1) then
+		return strformat((game.translate_string("gfcmod_gift_task_1_title") or ""),fetch .. " x" .. tostring(count),companion_name)
+	end
+	return strformat(game.translate_string("gfcmod_gift_task_1_title") or "",fetch,companion_name)
 end
 
+-- DESCRIPTION FUNCTORS
+function task_functor.gfcmod_gift_task_descr_f(task_id,field,p,tsk)
+	if (tsk.stage == 1) then
+		return game.translate_string("st_return_for_reward")
+	end
+	local fetch = db.actor and ui_item.get_sec_name(load_var(db.actor,task_id,""))
+	local count = fetch and load_var(db.actor,task_id.."_count") or 1
+	local companion_name = gfcmod_tasks_cache_tbl and gfcmod_tasks_cache_tbl.task_giver_name or "your companion"
+	if not fetch or fetch == "" or not count then
+		return strformat(game.translate_string("gfcmod_gift_task_1_descr_static"))
+	end
+	if (count > 1) then
+		return strformat((game.translate_string("gfcmod_gift_task_1_descr") or ""),companion_name,fetch .. " x" .. tostring(count))
+	end
+	return strformat(game.translate_string(p) or "",fetch)
+end
+
+-- TARGET FUNCTORS
 function task_functor.gfcmod_gift_task_target_f(task_id,field,p,tsk)
 	if (tsk.stage == 1) then
 		local id = tsk.task_giver_id
@@ -564,10 +558,12 @@ end
 ---------------------------< Callbacks >---------------------------
 local function save_state(m_data)
 	m_data.tasks_fetch_ids = DIALOG_ID
+	m_data.gfcmod_tasks_cache_tbl = gfcmod_tasks_cache_tbl
 end
 
 local function load_state(m_data)
 	DIALOG_ID = m_data.tasks_fetch_ids or {}
+	gfcmod_tasks_cache_tbl = m_data.gfcmod_tasks_cache_tbl or {}
 end
 
 local function on_before_level_changing()
@@ -620,4 +616,5 @@ function on_game_start()
 	RegisterScriptCallback("save_state",save_state)
 	RegisterScriptCallback("load_state",load_state)
 	RegisterScriptCallback("on_before_level_changing",on_before_level_changing)
+	
 end

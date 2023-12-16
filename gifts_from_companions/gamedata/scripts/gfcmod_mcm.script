@@ -11,6 +11,8 @@ function on_mcm_load()
             {id = "friendship_on_monster_death",type = "track", val = 2, min=0,     max=100,     step=1,     def = 2},
             {id = "friendship_on_companion_death",type = "track", val = 2, min=0,     max=100,     step=1,     def = 10},
             {id = "hide_friendship_messages",   type = "check", val = 1, def=false},
+            {id = "companions_quests_toggle",   type = "check", val = 1, def=true},
+            {id = "task_timer",                 type = "track", val = 2, min=1,     max=4800,     step=1,     def = 1200},
             {id = "debug_mode",                 type = "check", val = 1, def=false},
 		}
     }
@@ -27,6 +29,8 @@ local defaults = {
     ["friendship_on_monster_death"] = 2,
     ["friendship_on_companion_death"] = 10,
     ["hide_friendship_messages"] = false,
+    ["companions_quests_toggle"] = true,
+    ["task_timer"] = 900,
     ["debug_mode"] = false,
 }
 

@@ -1,21 +1,21 @@
 [simulation_task_gfcmod_gift_1]
-
 icon = ui_inGame2_D_Sisshik
 storyline = false
 
-title = simulation_task_gfcmod_gift_1_title
-title_functor = gfcmod_gift_task
-descr = simulation_task_gfcmod_gift_1_descr
-descr_functor = gfcmod_gift_task
-job_descr = simulation_task_gfcmod_gift_1_about
-fetch_descr = fcmod_task_1_fetch_about
-task_complete_descr = simulation_task_gfcmod_gift_1_fetch_finish
+title = gfcmod_gift_task_1_title_static
+title_functor = gfcmod_gift_task_title_f
+descr = gfcmod_gift_task_1_descr_static
+descr_functor = gfcmod_gift_task_descr_f
+job_descr = gfcmod_gift_task_1_job
+fetch_descr = gfcmod_task_1_fetch_about
+task_complete_descr = gfcmod_gift_task_1_finish
 
 stage_complete = 1
 target_functor = gfcmod_gift_task_target_f
 status_functor = actor_has_gfcmod_gift_item
 condlist_0 = {!task_giver_alive(simulation_task_gfcmod_gift_1)} fail
 
-on_init = %=setup_gfcmod_gift_task(simulation_task_gfcmod_gift_1:2:bandage)%
-on_complete = %%
-on_fail = %%
+on_init = %=setup_gfcmod_gift_task2(simulation_task_gfcmod_gift_1:supplies:1:1)%
+on_complete = %=gfcmod_gift_reward_and_remove(simulation_task_gfcmod_gift_1) =reset_gfcmod_companion_task() =inc_task_stage(simulation_task_gfcmod_gift_1) =pstor_reset(simulation_task_gfcmod_gift_1) =drx_sl_unregister_task_giver(simulation_task_gfcmod_gift_1) =drx_sl_reset_stored_task(simulation_task_gfcmod_gift_1)%
+on_fail = %=reset_gfcmod_companion_task() =pstor_reset(simulation_task_gfcmod_gift_1) =drx_sl_unregister_task_giver(simulation_task_gfcmod_gift_1) =drx_sl_reset_stored_task(simulation_task_gfcmod_gift_1)%
+on_cancel = %=reset_gfcmod_companion_task()%
