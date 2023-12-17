@@ -179,6 +179,9 @@ end
 
 function start_gfcmod_gift_task()
     local npc = get_random_companion()
+    
+    if npc:character_name() == "Ryan Gosling" then return end -- Literally You In Drive compatibility (Ryan Gosling doesnt give quests)
+
     gfcmod_tasks.set_stored_npc_task_giver(npc)
     local se_obj = npc and alife( ):object( npc:id( ) )
 	local giver_id = se_obj and se_obj.id
