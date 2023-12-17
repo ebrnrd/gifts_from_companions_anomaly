@@ -25,7 +25,7 @@ local bad_gifts_table = {
     -- TOOL
     "batteries_dead",
     "bolts_pack",
-    "boc_matches",
+    "box_matches",
 
     -- REPAIR
     "glue_b",
@@ -431,6 +431,9 @@ function get_random_gift()
     
     elseif current_friendship then
         selected_gifts_table = excellent_gifts_table
+        return selected_gifts_table[math.random(#selected_gifts_table)]
+    else
+        selected_gifts_table = bad_gifts_table
         return selected_gifts_table[math.random(#selected_gifts_table)]
     end
 end
