@@ -1,11 +1,8 @@
-local DIALOG_ID = {}
-local sfind = string.find
+local stored_npc_task_giver -- the random companion obj that gave the task
+local gfcmod_tasks_cache_tbl = {} -- saved data (task_giver_name)
 
-local stored_npc_task_giver
-local gfcmod_tasks_cache_tbl = {}
-
-local fetch_items = {}
-local fetch_rank_tier = {}
+local fetch_items = {} -- list of all possible companion gift task items
+local fetch_rank_tier = {} -- tiers of the items
 
 local patch_general = {
 	["army"] = {
@@ -96,17 +93,16 @@ xr_effects.gfcmod_complete_task_inc_friendship = function(actor, npc, p)
 	gfcmod.add_friendship(friendship_to_add)
 end
 
-
-xr_effects.reset_gfcmod_companion_task = function (actor, npc, p)
+xr_effects.reset_gfcmod_companion_task = function (actor, npc, p) -- reset the task on complete of fail so that the player can receive new companion tasks
 	gfcmod.reset_gfcmod_companion_task()
 	printdbg("Resetted gfcmod companion task")
 end
 	
 
 
-xr_effects.gfcmod_gift_reward_and_remove = function(actor, npc, p) --	Remove fetch items and give money reward:
---	Description:  Removes fetch task items and gives actor money reward based on item value
---	Usage: fetch_reward_and_remove( p[1]:p[2] )
+xr_effects.gfcmod_gift_reward_and_remove = function(actor, npc, p) --	Remove fetch items and give friendship reward:
+--	Description:  Removes fetch task items and gives actor friendship reward based on item value
+--	Usage: gfcmod_gift_reward_and_remove( p[1]:p[2] )
 --	Parameters:
 --		p[1] (type: string) Var name given to fetch task items
 --		p[2] (type: float) Multiplier for cost of items to apply to reward value (optional; default = 1.0)
@@ -258,45 +254,6 @@ xr_effects.remove_gift_item = function(actor,npc,p)
 	end
 end
 
-xr_effects.remove_artefact_item = function(actor,npc,p)
-	local section = load_var(db.actor,p[1])
-	if (not section) then
-		printe("!ERROR xr_effects.remove_artefact_item | no var found for %s", p[1])
-		return
-	end
-	
-	local cont
-	local obj = db.actor:object(section)
-	if (not obj) then
-		local search_cont = { "lead_box" , "af_aam", "af_aac", "af_iam" }
-		for i=1,#search_cont do
-			if db.actor:object(section .. "_" .. search_cont[i]) then
-				obj = db.actor:object(section .. "_" .. search_cont[i])
-				cont = search_cont[i]
-				break
-			end
-		end
-	end
-	
-	if (not obj) then
-		return
-	end
-	
-	local trade_npc = get_speaker()
-	if (trade_npc) then 
-		db.actor:transfer_item(obj, trade_npc)
-	else
-		alife_release(obj)
-	end
-	
-	if cont then
-		alife_create_item(cont, db.actor)
-		
-		-- play effect
-		level.add_cam_effector('camera_effects\\item_use.anm', 8053, false,'')
-		xr_effects.play_inv_aac_open()
-	end
-end
 
 function show_gfcmod_fetch_task_news(task_id, section, amount)
 	if not (task_id and section) then
@@ -483,6 +440,9 @@ xr_effects.setup_gfcmod_gift_task = function(actor,npc,p)
 		
 end
 
+
+--======== FUNCTORS ========--
+
 -- TITLE FUNCTORS
 function task_functor.gfcmod_gift_task_title_f(task_id,field,p,tsk)
 	local fetch = db.actor and ui_item.get_sec_name(load_var(db.actor,task_id,""))
@@ -524,9 +484,7 @@ function task_functor.gfcmod_gift_task_target_f(task_id,field,p,tsk)
 	end
 end
 
-
-
----------------------------< Status functor >---------------------------
+-- STATUS FUNCTORS
 task_status_functor.actor_has_gfcmod_gift_item = function(tsk,task_id)
 	local actor = db.actor
 	local section = actor and load_var(actor,task_id)
@@ -557,19 +515,11 @@ end
 
 ---------------------------< Callbacks >---------------------------
 local function save_state(m_data)
-	m_data.tasks_fetch_ids = DIALOG_ID
 	m_data.gfcmod_tasks_cache_tbl = gfcmod_tasks_cache_tbl
 end
 
 local function load_state(m_data)
-	DIALOG_ID = m_data.tasks_fetch_ids or {}
 	gfcmod_tasks_cache_tbl = m_data.gfcmod_tasks_cache_tbl or {}
-end
-
-local function on_before_level_changing()
-	empty_table(DIALOG_ID)
-	alife_storage_manager.get_state().tasks_fetch_ids = nil
-	printdbg("~ tasks_fetch | cleaned fetch list for npcs")
 end
 
 function on_game_start()
@@ -615,6 +565,5 @@ function on_game_start()
 
 	RegisterScriptCallback("save_state",save_state)
 	RegisterScriptCallback("load_state",load_state)
-	RegisterScriptCallback("on_before_level_changing",on_before_level_changing)
 	
 end

@@ -133,8 +133,16 @@
 		<text>Spending time together increased the friendship in your squad:</text>
 	</string>
 
+	<string id="st_gfcmod_friendship_increase_companion_death_good">
+		<text>The death of your companion made your squad more close, friendship increased:</text>
+	</string>
+
 	<string id="st_gfcmod_friendship_decrease_basic">
 		<text>Friendship decreased:</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_decrease_companion_death_bad">
+		<text>The death of your companion destroyed the spirits of your squad, friendship halved:</text>
 	</string>
 
 </string_table>
