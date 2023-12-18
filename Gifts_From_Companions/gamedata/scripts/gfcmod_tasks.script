@@ -93,6 +93,11 @@ xr_effects.gfcmod_complete_task_inc_friendship = function(actor, npc, p)
 	gfcmod.add_friendship(friendship_to_add)
 end
 
+xr_effects.gfcmod_fail_task_dec_friendship = function(actor, npc, p)
+	local friendship_to_remove = p[1] and tonumber(p[1])
+	gfcmod.add_friendship(-friendship_to_remove)
+end
+
 xr_effects.reset_gfcmod_companion_task = function (actor, npc, p) -- reset the task on complete of fail so that the player can receive new companion tasks
 	gfcmod.reset_gfcmod_companion_task()
 	printdbg("Resetted gfcmod companion task")
