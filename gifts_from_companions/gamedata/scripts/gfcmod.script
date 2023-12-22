@@ -10,7 +10,6 @@ local gift_chance -- chance to receive gift
 local friendship_timer -- time between passive friendship increment
 local friendship_on_npc_death_mult
 local friendship_on_monster_death_mult
-local friendship_on_companion_death -- not used anymore, for now
 local hide_friendship_messages = false
 local companions_quests_toggle
 local task_timer
@@ -21,13 +20,15 @@ local show_time = 5000 -- how long the notifications stay on the screen
 local max_gift_distance = 30 --max distance from companion to player to give gift
 local max_friendship = 100
 local random_messages_number = 5 -- the total number of gift phrases in st_gfcmod_messages.xml
-
-local gfcmod_companions_tbl = {}
+local temp_friendship_timer = 20
 
 local clr_g = utils_xml.get_color("d_green")
 local clr_w = utils_xml.get_color("white")
 
 -- VARIABLES --
+local gfcmod_companions_tbl = {}
+
+local tg_temp_friendship_target
 local temp_friendship = 0 -- value that accumulates while in combat and used to calculate the friendship once combat has ended
 local temp_friendship_type
 local temp_friendship_p = {}
@@ -38,7 +39,6 @@ local n = 1
 local is_first_load = false
 local gt = game.translate_string
 local has_companion_task = false
-local last_companions_number 
 
 local stored_id
 
@@ -48,10 +48,12 @@ local gfcmod_cache_tbl = {} --table with persistent data (friendship, tg_gift_ta
 
 function save_state(m_data)
     m_data.gfcmod_cache_tbl = gfcmod_cache_tbl
+    m_data.gfcmod_companions_tbl = gfcmod_companions_tbl
 end
 
 function load_state(m_data)
     gfcmod_cache_tbl = m_data.gfcmod_cache_tbl or {}
+    gfcmod_companions_tbl = m_data.gfcmod_companions_tbl or {}
 end
 
 function on_option_change()
@@ -72,43 +74,81 @@ function load_gfcmod_settings()
     friendship_timer = gfcmod_mcm.get_config("friendship_timer")
     friendship_on_npc_death_mult = gfcmod_mcm.get_config("friendship_on_npc_death_mult")
     friendship_on_monster_death_mult = gfcmod_mcm.get_config("friendship_on_monster_death_mult")
-    friendship_on_companion_death = gfcmod_mcm.get_config("friendship_on_companion_death")
     hide_friendship_messages = gfcmod_mcm.get_config("hide_friendship_messages")
     companions_quests_toggle = gfcmod_mcm.get_config("companions_quests_toggle")
     task_timer = gfcmod_mcm.get_config("task_timer")
     debug_mode = gfcmod_mcm.get_config("debug_mode")
 end
 
-function gfcmod_update_companions_tbl() -- Updates a custom companion table called gfcmod_companions_tbl which contains the obj.id of the player companions without the story companions
+
+function gfcmod_update_companions_tbl()
+    -- Updates the gfcmod_companions_tbl leaving only non story characters,
+    -- also initialize the .category for new added companions
+
     if axr_companions.get_companion_count() == 0 then
         empty_table(gfcmod_companions_tbl)
         return
     end
 
-    empty_table(gfcmod_companions_tbl)
+    -- remove not companions
+    local temp_companion_tbl = gfcmod_companions_tbl or {}
+    if temp_companion_tbl then
+        for i,c in pairs(temp_companion_tbl) do
+            local obj = level.object_by_id(i) or nil
+            if not (obj and obj:has_info("npcx_is_companion") and obj:alive()) then
+                gfcmod_companions_tbl[i] = nil
+                printdbg("removed id " .. i .. " from gfcmod_companions_tbl")
+            end
+        end    
+    end
+
+    -- add new companions
     local companion_table = axr_companions.list_actor_squad_by_id()
-    for i,c in pairs(companion_table) do       
+    for i, c in pairs(companion_table) do
         local se_obj = alife():object(c)
         local squad = se_obj and get_object_squad(se_obj)
-        if not get_object_story_id(se_obj.id) and not (squad and get_object_story_id(squad.id)) then        
-            table.insert(gfcmod_companions_tbl, c)
+
+        if not get_object_story_id(se_obj.id) and not (squad and get_object_story_id(squad.id)) then
+            local companion_id = c
+            if not gfcmod_companions_tbl[companion_id] then
+                gfcmod_companions_tbl[c] = {}
+                gfcmod_companions_tbl[c].category = "any"
+            end
         end
     end
+
+    for i, c in pairs(gfcmod_companions_tbl) do
+        local category_found = c.category or "category not found"
+        printdbg("Companion id: " .. i .. " | Category: " .. category_found)
+    end
 end
+
 
 function gfcmod_get_random_companion() -- gets a random companion obj
     if axr_companions.get_companion_count() == 0 then
         return
     end
-    gfcmod_update_companions_tbl()
-    if #gfcmod_companions_tbl == 0 then return end
-    return level.object_by_id(gfcmod_companions_tbl[math.random(#gfcmod_companions_tbl)])
+
+    local companions_id_tbl = {}
+    for i, c in pairs(gfcmod_companions_tbl) do
+        table.insert(companions_id_tbl, i)
+        printdbg("companion id added: " .. i)
+    end
+    if #companions_id_tbl < 0 then
+        return
+    end
+    local random_companion_id = companions_id_tbl[math.random(#companions_id_tbl)]
+    printdbg("random companion id: " .. random_companion_id)
+    return level.object_by_id(random_companion_id)
 end
 
+
 function gfcmod_get_companions_count() -- gets the number of the player's companions
-    gfcmod_update_companions_tbl()
-    printdbg(#gfcmod_companions_tbl)
-    return #gfcmod_companions_tbl
+    local companions_tbl = {}
+    for i, c in pairs(gfcmod_companions_tbl) do
+        table.insert(companions_tbl, i)
+    end
+    return #companions_tbl
 end
 
 function get_passive_friendship_increment() -- gets the passive friendship increment which is equal to the number of your companions
@@ -134,21 +174,15 @@ function add_friendship(friendship_to_add, type, p) -- friendship_to_add = frien
     
     local msg 
     local friendship_increase_or_decrease
-    
+    local last_friendship_stage = get_current_friendship_stage()
+
     if friendship_to_add > 0 then
         friendship_increase_or_decrease = "increase"
         gfcmod_cache_tbl.friendship = gfcmod_cache_tbl.friendship + friendship_to_add
 
         if gfcmod_cache_tbl.friendship < 0 then gfcmod_cache_tbl.friendship = 0 end
         if gfcmod_cache_tbl.friendship > max_friendship then gfcmod_cache_tbl.friendship = max_friendship end
-
-        if not type then
-            msg = clr_g .. gt("st_gfcmod_friendship_increase_basic") .. " " .. clr_w .. gfcmod_cache_tbl.friendship .. "/" .. max_friendship
-        elseif type == "revenge" and p[1] and p[1] ~= "" then
-            msg = clr_g .. gt("st_gfcmod_friendship_increase_" .. type, p[1]) .. " " .. clr_w .. gfcmod_cache_tbl.friendship .. "/" .. max_friendship
-        else
-            msg = clr_g .. gt("st_gfcmod_friendship_increase_" .. type) .. " " .. clr_w .. gfcmod_cache_tbl.friendship .. "/" .. max_friendship
-        end            
+          
     end
     
     if friendship_to_add < 0 then
@@ -159,10 +193,16 @@ function add_friendship(friendship_to_add, type, p) -- friendship_to_add = frien
         if gfcmod_cache_tbl.friendship > max_friendship then gfcmod_cache_tbl.friendship = max_friendship end
     end
 
+    local current_friendship_stage = get_current_friendship_stage()
+
+    if last_friendship_stage ~= current_friendship_stage then
+        on_friendship_stage_change()
+    end
+
     if not type then
         msg = strformat(game.translate_string("st_gfcmod_friendship_" .. friendship_increase_or_decrease .. "_basic") .. " " .. gfcmod_cache_tbl.friendship .. "/" .. max_friendship)
     elseif type == "revenge" and p[1] and p[1] ~= "" then
-        msg = strformat(game.translate_string("st_gfcmod_friendship_" .. friendship_increase_or_decrease .. "_revenge"),p[1] .. " " .. gfcmod_cache_tbl.friendship .. "/" .. max_friendship)     
+        msg = strformat(game.translate_string("st_gfcmod_friendship_" .. friendship_increase_or_decrease .. "_" .. type),p[1] .. " " .. gfcmod_cache_tbl.friendship .. "/" .. max_friendship)     
     else 
         msg = strformat(game.translate_string("st_gfcmod_friendship_" .. friendship_increase_or_decrease .. "_" .. type) .. " " .. gfcmod_cache_tbl.friendship .. "/" .. max_friendship)
     end 
@@ -170,8 +210,10 @@ function add_friendship(friendship_to_add, type, p) -- friendship_to_add = frien
     if not hide_friendship_messages then
         news_manager.send_tip(db.actor, msg, nil, nil, show_time)
     end
-    temp_friendship_type = nil
-    empty_table(temp_friendship_p)
+
+
+    --temp_friendship_type = nil
+    --empty_table(temp_friendship_p)
 end
 
 function calculate_tg_gift_target() -- calculate time for next gift
@@ -182,6 +224,11 @@ end
 function calculate_tg_friendship_target() -- calculate time for next passive friendship increment
     local tg = time_global()
     gfcmod_cache_tbl.tg_friendship_target = tg + friendship_timer*1000
+end
+
+function calculate_tg_temp_friendship_target() -- calculate time for next passive friendship increment
+    local tg = time_global()
+    tg_temp_friendship_target = tg + temp_friendship_timer*1000
 end
 
 function calculate_tg_task_target() -- calculate time for next companion task
@@ -222,11 +269,23 @@ function get_current_friendship_stage() -- returns the name of the current frien
     end
 end
 
+function on_friendship_stage_change()
+    
+    local msg = strformat(gt("st_gfcmod_friendship_stage_changed") .. " " .. get_current_friendship_stage())
+
+    if not hide_friendship_messages then
+        news_manager.send_tip(db.actor, msg, nil, nil, show_time)
+    end
+end
+
+
 function reset_temp_friendship()
     temp_friendship = 0
     temp_friendship_type = nil
     empty_table(temp_friendship_p)
 end
+
+
 
 function start_gfcmod_gift_task()
     local npc = gfcmod_get_random_companion()
@@ -242,6 +301,205 @@ function reset_gfcmod_companion_task()
     calculate_tg_task_target()
 end
 
+function gfcmod_set_companion_in_need(companion)
+    local companion_id = companion:id()
+    if not companion_id then return end
+    if not gfcmod_companions_tbl[companion_id] then return end
+    if gfcmod_companions_tbl[companion_id].in_need then return end
+    
+    gfcmod_companions_tbl[companion_id].in_need = true
+    
+    local obj = level.object_by_id(companion_id)
+    local companion_name = obj:character_name() or "Companion"
+    local msg = companion_name .. ": " .. "Hey man, I need to talk to you when you have a second"
+    news_manager.send_tip(db.actor, msg, nil, nil, show_time)
+end
+
+--[[
+function announce_gfcmod_task()
+
+    if not gfcmod_cache_tbl.companion_with_task_id or gfcmod_cache_tbl.companion_with_task_id == 0 then
+        local npc = gfcmod_get_random_companion()
+        local id = npc and npc:id()
+        gfcmod_cache_tbl.companion_with_task_id = id or 0
+    end
+    
+    if gfcmod_cache_tbl.companion_with_task_id then
+        local obj = level.object_by_id(gfcmod_cache_tbl.companion_with_task_id)
+        local companion_name = obj:character_name() or "Companion"
+        local msg = companion_name .. ": " .. "Hey man, I need to talk to you when you have a second"
+        news_manager.send_tip(db.actor, msg, nil, nil, show_time)
+    end
+end
+]]--
+
+-- ============= DIALOG SYSTEM ================= THANKS TO NLTP_ASHES FOR THE HELP
+function add_my_dialog(character_id, dialog_list)
+    dialog_list:add("gfcmod_companion_dialog_1")
+    dialog_list:add("gfcmod_companion_settings")
+ end
+
+function is_in_gfcmod_companion_tbl(first_speaker, second_speaker)
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    if not npc_id then
+        return false
+    end
+    if gfcmod_companions_tbl[npc_id] then 
+        return true
+    else
+        return false
+    end
+end
+
+function is_companion_in_need(first_speaker, second_speaker)
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    if not npc_id then
+        return false
+    end
+    if not (gfcmod_companions_tbl[npc_id] and gfcmod_companions_tbl[npc_id].in_need) then 
+        return false
+    end
+    if gfcmod_companions_tbl[npc_id] and gfcmod_companions_tbl[npc_id].in_need then
+        return true
+    end
+end
+
+function is_friendship_stage_at_least_bad()
+    if get_current_friendship_stage() == "bad" or get_current_friendship_stage() == "normal" or get_current_friendship_stage() == "good" or get_current_friendship_stage() == "excellent" then 
+        return true
+    else return false end
+end
+
+function is_friendship_stage_at_least_normal()
+    if get_current_friendship_stage() == "normal" or get_current_friendship_stage() == "good" or get_current_friendship_stage() == "excellent" then
+        return true
+    else return false end
+end
+
+function is_friendship_stage_at_least_good()
+    if get_current_friendship_stage() == "good" or get_current_friendship_stage() == "excellent" then
+        return true
+    else return false end
+end
+
+function is_friendship_stage_at_least_excellent()
+    if get_current_friendship_stage() == "excellent" then return true
+    else return false end
+end
+
+function set_companion_gifts_category_any(first_speaker, second_speaker)
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    local category = "any"
+    if not npc_id then
+        return false
+    end
+    -- Check if the npc_id exists in the gfcmod_companions_tbl
+    if gfcmod_companions_tbl[npc_id] then
+    gfcmod_companions_tbl[npc_id].category = category
+    printdbg("category set for companion" .. npc_id .. " category: " .. (gfcmod_companions_tbl[npc_id].category or "category failed"))
+    end
+end
+
+function set_companion_gifts_category_food(first_speaker, second_speaker)
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    local category = "food"
+    if not npc_id then
+        return false
+    end
+    -- Check if the npc_id exists in the gfcmod_companions_tbl
+    if gfcmod_companions_tbl[npc_id] then
+    gfcmod_companions_tbl[npc_id].category = category
+    printdbg("category set for companion" .. npc_id .. " category: " .. (gfcmod_companions_tbl[npc_id].category or "category failed"))
+    end
+end
+
+function set_companion_gifts_category_drink(first_speaker, second_speaker)
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    local category = "drink"
+    if not npc_id then
+        return false
+    end
+    -- Check if the npc_id exists in the gfcmod_companions_tbl
+    if gfcmod_companions_tbl[npc_id] then
+    gfcmod_companions_tbl[npc_id].category = category
+    printdbg("category set for companion" .. npc_id .. " category: " .. (gfcmod_companions_tbl[npc_id].category or "category failed"))
+    end
+end
+
+function set_companion_gifts_category_medical(first_speaker, second_speaker)
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    local category = "medical"
+    if not npc_id then
+        return false
+    end
+    -- Check if the npc_id exists in the gfcmod_companions_tbl
+    if gfcmod_companions_tbl[npc_id] then
+    gfcmod_companions_tbl[npc_id].category = category
+    printdbg("category set for companion" .. npc_id .. " category: " .. (gfcmod_companions_tbl[npc_id].category or "category failed"))
+    end
+end
+
+function set_companion_gifts_category_tool(first_speaker, second_speaker)
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    local category = "tool"
+    if not npc_id then
+        return false
+    end
+    -- Check if the npc_id exists in the gfcmod_companions_tbl
+    if gfcmod_companions_tbl[npc_id] then
+    gfcmod_companions_tbl[npc_id].category = category
+    printdbg("category set for companion" .. npc_id .. " category: " .. (gfcmod_companions_tbl[npc_id].category or "category failed"))
+    end
+end
+
+function set_companion_gifts_category_repair(first_speaker, second_speaker)
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    local category = "repair"
+    if not npc_id then
+        return false
+    end
+    -- Check if the npc_id exists in the gfcmod_companions_tbl
+    if gfcmod_companions_tbl[npc_id] then
+    gfcmod_companions_tbl[npc_id].category = category
+    printdbg("category set for companion" .. npc_id .. " category: " .. (gfcmod_companions_tbl[npc_id].category or "category failed"))
+    end
+end
+
+function set_companion_gifts_category_misc(first_speaker, second_speaker)
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    local category = "misc"
+    if not npc_id then
+        return false
+    end
+    -- Check if the npc_id exists in the gfcmod_companions_tbl
+    if gfcmod_companions_tbl[npc_id] then
+    gfcmod_companions_tbl[npc_id].category = category
+    printdbg("category set for companion" .. npc_id .. " category: " .. (gfcmod_companions_tbl[npc_id].category or "category failed"))
+    end
+end
+
+function set_companion_gifts_category_ammo(first_speaker, second_speaker)
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    local category = "ammo"
+    if not npc_id then
+        return false
+    end
+    -- Check if the npc_id exists in the gfcmod_companions_tbl
+    if gfcmod_companions_tbl[npc_id] then
+    gfcmod_companions_tbl[npc_id].category = category
+    printdbg("category set for companion" .. npc_id .. " category: " .. (gfcmod_companions_tbl[npc_id].category or "category failed"))
+    end
+end
 
 --======================================================== 
 -- code straight up copied from Chatty Companions addon by Darkasleif
@@ -347,19 +605,20 @@ function squad_on_npc_death(squad, se_obj, killer)
     if (not killer) or se_obj.id == killer.id then return end
 
     local obj = level.object_by_id(se_obj.id)
+    local squad = se_obj and get_object_squad(se_obj)
 
     -- IF COMPANION DIES
-    if obj and obj:has_info("npcx_is_companion") then
+    if obj and obj:has_info("npcx_is_companion") and not get_object_story_id(se_obj.id) and not (squad and get_object_story_id(squad.id)) then
         gfcmod_cache_tbl.last_companion_killer_id = killer.id
         gfcmod_cache_tbl.last_companion_dead_name = obj:character_name()
+        gfcmod_update_companions_tbl()
         gfcmod_set_max_friendship()
         if gfcmod_cache_tbl.friendship then
+            local friendship = get_current_friendship()
             if math.random() <= 0.1 then -- SMALL CHANCE TO GAIN FRIENDHSIP INSTEAD OF LOSING IT
-                temp_friendship = temp_friendship + math.floor(gfcmod_cache_tbl.friendship * 0.5)
-                temp_friendship_type = "companion_death_good"
+                add_friendship(math.floor(friendship * 0.5), "companion_death_good")
             else
-                temp_friendship = temp_friendship - math.floor(gfcmod_cache_tbl.friendship * 0.5)
-                temp_friendship_type = "companion_death_bad"
+                add_friendship(-math.floor(friendship * 0.5), "companion_death_bad")
             end
         end return
     end
@@ -379,12 +638,10 @@ function squad_on_npc_death(squad, se_obj, killer)
             local friendship_on_monster_death_with_rank = math.floor(monster_rank * friendship_on_monster_death_mult)
             printdbg("friendship received for killing mutant: " .. friendship_on_monster_death_with_rank)
             temp_friendship = temp_friendship + friendship_on_monster_death_with_rank
-            temp_friendship_type = nil
-            empty_table(temp_friendship_p)
         end
    
     -- IF ENEMY NPC KILLED
-    elseif (IsStalker(se_obj)) then
+    elseif obj and not obj:has_info("npcx_is_companion") and (IsStalker(se_obj)) then
 
         local npc_rank_name = ranks.get_se_obj_rank_name(se_obj)
         
@@ -427,8 +684,6 @@ function squad_on_npc_death(squad, se_obj, killer)
             else
                 printdbg("friendship received for killing npc: " .. friendship_on_npc_death_with_rank)
                 temp_friendship = temp_friendship + friendship_on_npc_death_with_rank
-                temp_friendship_type = nil
-                empty_table(temp_friendship_p)
             end
         end
     end
@@ -437,6 +692,8 @@ end
 function actor_on_first_update() -- here I check if the variables saved in cache are valid, if they are not (for example when starting a new game), I initialize them.
     
     load_gfcmod_settings()
+
+    calculate_tg_temp_friendship_target()
 
     if not gfcmod_cache_tbl.tg_gift_target or gfcmod_cache_tbl.tg_gift_target == 0 then
         gfcmod_cache_tbl.tg_gift_target = 0
@@ -485,6 +742,8 @@ function actor_on_update() -- here we check the timers, when a timer is lower th
     n = 1
 
     local tg = time_global()
+
+    gfcmod_update_companions_tbl()
     
     gfcmod_cache_tbl.tg_last = tg -- the engine everytime the actual game is opened, resets the global times, this helps to calculate the delta from the tg from last session
     
@@ -505,7 +764,7 @@ function actor_on_update() -- here we check the timers, when a timer is lower th
     gfcmod_set_max_friendship() -- i set the max friendship before doing anything else
 
     -- when the temp_friendship accumulated isn't 0 it adds (or subtracts) the friendship to the total
-    if temp_friendship and temp_friendship ~= 0 then
+    if tg >= tg_temp_friendship_target and temp_friendship and temp_friendship ~= 0 then
         add_friendship(temp_friendship, temp_friendship_type, temp_friendship_p)
         reset_temp_friendship()
     end
@@ -520,9 +779,11 @@ function actor_on_update() -- here we check the timers, when a timer is lower th
     -- companion gifts timer
     if tg >= gfcmod_cache_tbl.tg_gift_target and area_clear then
         local rnd_companion = gfcmod_get_random_companion()
+        local companion_id = rnd_companion and rnd_companion:id()
         if rnd_companion and rnd_companion:id() ~= 0 and distance_between(db.actor,rnd_companion) <= max_gift_distance then
-            if math.random() <= gift_chance + (gfcmod_cache_tbl.friendship / max_friendship) then
-                local random_gift = gfcmod_tables.get_random_gift()
+            if math.random() <= gift_chance + (gfcmod_cache_tbl.friendship / max_friendship) * 0.5 then
+                local category = gfcmod_companions_tbl[companion_id] and gfcmod_companions_tbl[companion_id].category or "any"
+                local random_gift = gfcmod_tables.get_random_gift(category)
                 local msg = clr_g .. rnd_companion:character_name() .. ": " .. clr_w .. gt("st_gfcmod_".. get_current_friendship_stage() .. math.random(1, random_messages_number))
                 news_manager.send_tip(db.actor, msg, nil, rnd_companion, show_time, rnd_companion:id())
                 alife_create_item(random_gift, alife():object(0))
@@ -535,6 +796,8 @@ function actor_on_update() -- here we check the timers, when a timer is lower th
     -- companion tasks timer
     if tg >= gfcmod_cache_tbl.tg_task_target and not gfcmod_cache_tbl.companion_task_active and companions_quests_toggle then
         start_gfcmod_gift_task()
+        --local random_companion = gfcmod_get_random_companion()
+        --gfcmod_set_companion_in_need(random_companion)
         gfcmod_cache_tbl.companion_task_active = true
         calculate_tg_task_target()
     end
@@ -552,7 +815,8 @@ function on_game_start()
     RegisterScriptCallback("save_state",save_state)
 	RegisterScriptCallback("load_state",load_state)
     RegisterScriptCallback("squad_on_npc_death", squad_on_npc_death)
-    RegisterScriptCallback("on_enemy_eval", on_enemy_eval)   
+    RegisterScriptCallback("on_enemy_eval", on_enemy_eval)
+    RegisterScriptCallback("on_specific_character_dialog_list", add_my_dialog)   
 
     is_first_load = true
 

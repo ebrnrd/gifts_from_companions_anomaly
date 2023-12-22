@@ -126,7 +126,7 @@
 	</string>
 
 	<string id="st_gfcmod_friendship_increase_basic">
-		<text>Friendship increased:</text>
+		<text>Recent events increased the friendship in your squad:</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_increase_passive">
@@ -134,7 +134,7 @@
 	</string>
 
 	<string id="st_gfcmod_friendship_increase_revenge">
-		<text>You avenged the death of %s, friendship increased:</text>
+		<text>You avenged the death of %s. Friendship increased:</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_decrease_revenge">
@@ -142,15 +142,27 @@
 	</string>
 
 	<string id="st_gfcmod_friendship_increase_companion_death_good">
-		<text>The death of your companion made your squad more close, friendship increased:</text>
+		<text>The death of your companion made your squad more close. Friendship increased:</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_decrease_basic">
-		<text>Friendship decreased:</text>
+		<text>Recent events lowered the friendship in your squad:</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_decrease_companion_death_bad">
-		<text>The death of your companion destroyed the spirits of your squad, friendship halved:</text>
+		<text>The death of your companion destroyed the spirits of your squad. Friendship halved:</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_decrease_task_fail">
+		<text>You let down your companion. Friendship decreased:</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_increase_task_complete">
+		<text>You helped out your companion. Friendship increased:</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_stage_changed">
+		<text>New friendship stage:</text>
 	</string>
 
 </string_table>

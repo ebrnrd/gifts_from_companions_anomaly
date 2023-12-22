@@ -90,12 +90,12 @@ end
 
 xr_effects.gfcmod_complete_task_inc_friendship = function(actor, npc, p)
 	local friendship_to_add = p[1] and tonumber(p[1])
-	gfcmod.add_friendship(friendship_to_add)
+	gfcmod.add_friendship(friendship_to_add, "task_complete")
 end
 
 xr_effects.gfcmod_fail_task_dec_friendship = function(actor, npc, p)
 	local friendship_to_remove = p[1] and tonumber(p[1])
-	gfcmod.add_friendship(-friendship_to_remove)
+	gfcmod.add_friendship(-friendship_to_remove, "task_fail")
 end
 
 xr_effects.reset_gfcmod_companion_task = function (actor, npc, p) -- reset the task on complete of fail so that the player can receive new companion tasks
@@ -103,7 +103,29 @@ xr_effects.reset_gfcmod_companion_task = function (actor, npc, p) -- reset the t
 	printdbg("Resetted gfcmod companion task")
 end
 	
-
+xr_effects.gfcmod_reward_stash = function(actor,npc,p)
+	local stash_chance
+	local current_friendship_stage = gfcmod.get_current_friendship_stage()
+	
+	if not current_friendship_stage then return end
+	
+	if current_friendship_stage == "bad" then stash_chance = 0
+	elseif current_friendship_stage == "normal" then stash_chance = 0.05
+	elseif current_friendship_stage == "good" then stash_chance = 0.1
+	elseif current_friendship_stage == "excellent" then stash_chance = 0.2
+	else stash_chance = 0.05 end
+		
+	if stash_chance and math.random() <= stash_chance then
+		local bonus
+		if math.random(1,100) <= 50 then
+			local stash_bonus = treasure_manager.stash_bonus
+			if stash_bonus and (#stash_bonus > 0) then
+				bonus = {stash_bonus[math.random(#stash_bonus)]}
+			end
+		end
+		treasure_manager.create_random_stash(nil,nil,bonus, true)
+	end
+end
 
 xr_effects.gfcmod_gift_reward_and_remove = function(actor, npc, p) --	Remove fetch items and give friendship reward:
 --	Description:  Removes fetch task items and gives actor friendship reward based on item value
@@ -202,9 +224,9 @@ xr_effects.gfcmod_gift_reward_and_remove = function(actor, npc, p) --	Remove fet
 		--local min_reward = (total_cost - delta)
 		--local max_reward = (total_cost + delta)
 		--local random_reward = math.random(min_reward, max_reward)
-		local friendship_to_add = math.floor(total_cost / 500)
+		local friendship_to_add = math.floor(total_cost / 600)
 		if friendship_to_add > 0 then
-			gfcmod.add_friendship(friendship_to_add)
+			gfcmod.add_friendship(friendship_to_add, "task_complete")
 		end
 	
 		-- Give task items to npc

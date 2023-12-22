@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="windows-1251" standalone="yes" ?>
+<!--=================================================================================================================-->
+<!--                                                                                                                 -->
+<!--    Original Author(s) : NLTP_ASHES                                                                              -->
+<!--    Edited : N/A                                                                                                 -->
+<!--    Date : 11/11/2023                                                                                            -->
+<!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
+<!--                                                                                                                 -->
+<!--    Translation file for Western Goods' dialogs.                                                                 -->
+<!--                                                                                                                 -->
+<!--=================================================================================================================-->
+<string_table>
+
+    <string id="my_custom_dialogue_1_0">
+        <text>Daddy..?</text>
+    </string>
+
+    <string id="my_custom_dialogue_1_1">
+        <text>Yes.</text>
+    </string>
+
+    <string id="gfcmod_companion_settings_open">
+        <text>Can I talk to you for a second?</text>
+    </string>
+
+    <string id="gfcmod_companion_settings_open_response">
+        <text>Yeah sure! What's up?</text>
+    </string>
+
+    <string id="gfcmod_companion_settings_back">
+        <text>Actually never mind.</text>
+    </string>
+
+    <string id="gfcmod_change_gifts_category">
+        <text>About the stuff your are bringing me...</text>
+    </string>
+
+    <string id="gfcmod_change_gifts_category_response">
+        <text>Yes, what about it?</text>
+    </string>
+
+    <string id="gfcmod_change_gifts_category_any">
+        <text>You can bring me anything you find, no special requests!</text>
+    </string>
+
+    <string id="gfcmod_change_gifts_category_food">
+        <text>Can you bring me just food? If you have anything to spare.</text>
+    </string>
+
+    <string id="gfcmod_change_gifts_category_drink">
+        <text>I just need drinks or cigarettes.</text>
+    </string>
+
+    <string id="gfcmod_change_gifts_category_medical">
+        <text>I'm looking for medical supplies, let me know if you find any.</text>
+    </string>
+
+    <string id="gfcmod_change_gifts_category_tool">
+        <text>I need tools, keep your eyes open for those.</text>
+    </string>
+
+    <string id="gfcmod_change_gifts_category_repair">
+        <text>I need stuff to repair my gear, care to share?</text>
+    </string>
+
+    <string id="gfcmod_change_gifts_category_misc">
+        <text>Just bring me junk, that's all I want.</text>
+    </string>
+
+    <string id="gfcmod_change_gifts_category_ammo">
+        <text>I'm low on ammo, if you find some let me know.</text>
+    </string>
+    
+    <string id="gfcmod_change_gifts_category_final_response">
+        <text>Sure my friend! Thanks for letting me know.</text>
+    </string>
+
+
+</string_table>

@@ -17,7 +17,7 @@
 		<text>Maximum seconds before receiving a new gift</text>
 	</string>
 	<string id="ui_mcm_gfcmod_gift_chance">
-		<text>Chance of receiving a new gift</text>
+		<text>Base chance of receiving a new gift</text>
 	</string>
 	<string id="ui_mcm_gfcmod_friendship_timer">
 		<text>Seconds between passive friendship increments</text>
