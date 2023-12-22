@@ -1,18 +1,27 @@
 function on_mcm_load()
     op = { id= "gfcmod",sh=true ,gr={
             {id = "title",                          type= "slide", link= "ui_options_slider_player", text="ui_mcm_gfcmod_title", size= {512,50}, spacing= 20},
-            {id = "desc1",                          type = "desc", text = "ui_mcm_gfcmod_desc1"},
-
+            
+            {id = "title",                          type = "desc", text = "ui_mcm_gfcmod_gifts_settings"},
 			{id = "min_timer",                      type = "track", val = 2, min=1,     max=3600,    step=1,     def = 300},
             {id = "max_timer",                      type = "track", val = 2, min=2,     max=3600,   step=1,     def = 500},
-            {id = "friendship_timer",               type = "track", val = 2, min=1,     max=3600,   step=1,     def = 700},
             {id = "gift_chance",                    type = "track", val = 2, min=0,     max=1,      step=0.1,     def = 0.4},
+            
+            {id="divider", type="line" },
+            {id = "title",                          type = "desc", text = "ui_mcm_gfcmod_friendship_settings"},
+            {id = "friendship_timer",               type = "track", val = 2, min=1,     max=3600,   step=1,     def = 700},
             {id = "friendship_on_npc_death_mult",   type = "track", val = 2, min=0,     max=5,      step=0.1,     def = 1},
             {id = "friendship_on_monster_death_mult",type = "track", val = 2, min=0,    max=5,     step=0.1,     def = 1},
             {id = "hide_friendship_messages",       type = "check", val = 1, def=false},
+            
+            {id="divider", type="line" },
+            {id = "title",                          type = "desc", text = "ui_mcm_gfcmod_tasks_settings"},
             {id = "companions_quests_toggle",       type = "check", val = 1, def=true},
             {id = "task_timer",                     type = "track", val = 2, min=1,     max=3600,     step=1,     def = 640},
+            
+            {id="divider", type="line" },
             {id = "debug_mode",                     type = "check", val = 1, def=false},
+
 		}
     }
     return op

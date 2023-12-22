@@ -1,3 +1,6 @@
+
+-- This script is just a modified version of the task_fetch.script, I basically added custom dialogs and conditions to adapt it to the mod systems.
+
 local stored_npc_task_giver -- the random companion obj that gave the task
 local gfcmod_tasks_cache_tbl = {} -- saved data (task_giver_name)
 

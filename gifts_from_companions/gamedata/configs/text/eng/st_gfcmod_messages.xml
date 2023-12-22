@@ -1,63 +1,6 @@
 <?xml version="1.0" encoding="windows-1251"?>
 
 <string_table>
-
-	<!--BASIC MESSAGES (UNUSED)-->
-	<string id="st_gfcmod_basic1">
-		<text>Hey man, this made me think of you...</text>
-	</string>
-	
-    <string id="st_gfcmod_basic2">
-		<text>You know what? Thanks for the great times together, here's something for you</text>
-	</string>	
-
-    <string id="st_gfcmod_basic3">
-		<text>Do you want this? I don't have any use for it</text>
-	</string>
-
-    <string id="st_gfcmod_basic4">
-		<text>Yooo check it! Look what I found!</text>
-	</string>
-
-	<string id="st_gfcmod_basic5">
-		<text>Hey, found something out there. Thought it might interest you.</text>
-	</string>
-
-	<string id="st_gfcmod_basic6">
-		<text>Here's a little something for you. Consider it a token of our adventures.</text>
-	</string>
-
-	<string id="st_gfcmod_basic7">
-		<text>Found an interesting item. It's yours now.</text>
-	</string>
-
-	<string id="st_gfcmod_basic8">
-		<text>Guess what I stumbled upon? It's a surprise, take it!</text>
-	</string>
-
-	<string id="st_gfcmod_basic9">
-		<text>Found a little extra during my travels. Take this, my friend.</text>
-	</string>
-
-	<string id="st_gfcmod_basic10">
-		<text>Got my hands on something. It's yours, no strings attached.</text>
-	</string>
-
-	<string id="st_gfcmod_basic11">
-		<text>Gift from the Zone! Found this during my latest expedition.</text>
-	</string>
-
-	<string id="st_gfcmod_basic12">
-		<text>Check it out! Something I found that might come in handy for you.</text>
-	</string>
-
-	<string id="st_gfcmod_basic13">
-		<text>Found a little surprise for you. Enjoy!</text>
-	</string>
-
-	<string id="st_gfcmod_basic14">
-		<text>Gift time, my friend! Found something useful just for you.</text>
-	</string>
 	
 	<!--STAGES MESSAGES-->
 	

@@ -2,7 +2,7 @@
 
 <game_dialogs>
 
-    <dialog id="gfcmod_companion_dialog_1">
+    <dialog id="gfcmod_companion_in_need">
         <precondition>dialogs_axr_companion.is_actor_companion</precondition>
         <precondition>gfcmod.is_companion_in_need</precondition>
         <phrase_list>

@@ -1,23 +1,6 @@
 <?xml version="1.0" encoding="windows-1251" standalone="yes" ?>
-<!--=================================================================================================================-->
-<!--                                                                                                                 -->
-<!--    Original Author(s) : NLTP_ASHES                                                                              -->
-<!--    Edited : N/A                                                                                                 -->
-<!--    Date : 11/11/2023                                                                                            -->
-<!--    License : Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)          -->
-<!--                                                                                                                 -->
-<!--    Translation file for Western Goods' dialogs.                                                                 -->
-<!--                                                                                                                 -->
-<!--=================================================================================================================-->
+
 <string_table>
-
-    <string id="my_custom_dialogue_1_0">
-        <text>Daddy..?</text>
-    </string>
-
-    <string id="my_custom_dialogue_1_1">
-        <text>Yes.</text>
-    </string>
 
     <string id="gfcmod_companion_settings_open">
         <text>Can I talk to you for a second?</text>
@@ -44,7 +27,7 @@
     </string>
 
     <string id="gfcmod_change_gifts_category_food">
-        <text>Can you bring me just food? If you have anything to spare.</text>
+        <text>Can you only bring me food? If you have it to spare.</text>
     </string>
 
     <string id="gfcmod_change_gifts_category_drink">
@@ -72,7 +55,7 @@
     </string>
     
     <string id="gfcmod_change_gifts_category_final_response">
-        <text>Sure my friend! Thanks for letting me know.</text>
+        <text>Sure, my friend! I'll find something alright.</text>
     </string>
 
 

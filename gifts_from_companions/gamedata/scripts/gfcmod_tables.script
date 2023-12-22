@@ -475,7 +475,7 @@ function get_random_gift(category)
     end
 
     for k, v in pairs(selected_gifts_table) do
-        printdbg(v)
+        --printdbg(v)
     end
     return selected_gifts_table[math.random(#selected_gifts_table)]
 

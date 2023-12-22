@@ -1,46 +1,78 @@
 <?xml version="1.0" encoding="windows-1251"?>
 
 <string_table>
+
 	<string id="ui_mcm_gfcmod_title">
-		<text>Gifts From Companions Options</text>
+		<text>Gifts From Companions Settings</text>
 	</string>
+
 	<string id="ui_mcm_menu_gfcmod">
 		<text>Gifts From Companions</text>
 	</string>
-	<string id="ui_mcm_gfcmod_desc1">
-		<text>General Settings</text>
+
+	<string id="ui_mcm_gfcmod_gifts_settings">
+		<text>Gifts System</text>
 	</string>
 	<string id="ui_mcm_gfcmod_min_timer">
-		<text>Minimun seconds before receiving a new gift</text>
+		<text>Gifts minimum timer</text>
+	</string>
+	<string id="ui_mcm_gfcmod_min_timer_desc">
+		<text>Min seconds that need to pass before having a chance for a new gift</text>
 	</string>
 	<string id="ui_mcm_gfcmod_max_timer">
-		<text>Maximum seconds before receiving a new gift</text>
+		<text>Gifts maximum timer</text>
+	</string>
+	<string id="ui_mcm_gfcmod_max_timer_desc">
+		<text>Max seconds that can pass before having a chance for a new gift</text>
 	</string>
 	<string id="ui_mcm_gfcmod_gift_chance">
-		<text>Base chance of receiving a new gift</text>
+		<text>Base gift chance</text>
+	</string>
+	<string id="ui_mcm_gfcmod_gift_chance_desc">
+		<text>Chance of receiving a gift at the lowest friendship stage</text>
+	</string>
+
+	<string id="ui_mcm_gfcmod_friendship_settings">
+		<text>Friendship System</text>
 	</string>
 	<string id="ui_mcm_gfcmod_friendship_timer">
-		<text>Seconds between passive friendship increments</text>
+		<text>Passive friendship timer</text>
 	</string>
-	<string id="ui_mcm_gfcmod_debug_mode">
-		<text>Debug mode</text>
+	<string id="ui_mcm_gfcmod_friendship_timer_desc">
+		<text>Seconds between each passive friendship increment</text>
 	</string>
 	<string id="ui_mcm_gfcmod_friendship_on_npc_death_mult">
-		<text>Friendship multiplier when killing an enemy npc</text>
+		<text>Friendship on enemy death multiplier</text>
+	</string>
+	<string id="ui_mcm_gfcmod_friendship_on_npc_death_mult_desc">
+		<text>Multiplier for the friendship added when killing an enemy NPC</text>
 	</string>
 	<string id="ui_mcm_gfcmod_friendship_on_monster_death_mult">
-		<text>Friendship multiplier when killing an enemy mutant</text>
+		<text>Friendship on mutant death multiplier</text>
 	</string>
-	<string id="ui_mcm_gfcmod_friendship_on_companion_death">
-		<text>Friendship lost when one companion dies (does nothing for now)</text>
+	<string id="ui_mcm_gfcmod_friendship_on_monster_death_mult_desc">
+		<text>Multiplier for the friendship added when killing an enemy mutant</text>
 	</string>
 	<string id="ui_mcm_gfcmod_hide_friendship_messages">
 		<text>Hide friendship level changes notifications</text>
 	</string>
-	<string id="ui_mcm_gfcmod_task_timer">
-		<text>Seconds that need to pass before receiving a new companion task</text>
+
+	<string id="ui_mcm_gfcmod_tasks_settings">
+		<text>Companion Tasks System</text>
 	</string>
 	<string id="ui_mcm_gfcmod_companions_quests_toggle">
-		<text>Toggle on or off the automatic quests from companions</text>
+		<text>Companion tasks active</text>
+	</string>
+	<string id="ui_mcm_gfcmod_companions_quests_toggle_desc">
+		<text>Toggle on or off the companion tasks system</text>
+	</string>
+	<string id="ui_mcm_gfcmod_task_timer">
+		<text>Companion task timer</text>
+	</string>
+	<string id="ui_mcm_gfcmod_task_timer_desc">
+		<text>Seconds that need to pass before receiving a new companion task</text>
+	</string>
+	<string id="ui_mcm_gfcmod_debug_mode">
+		<text>Debug mode</text>
 	</string>
 </string_table>
