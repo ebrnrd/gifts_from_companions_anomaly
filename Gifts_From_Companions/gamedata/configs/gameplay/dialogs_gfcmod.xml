@@ -2,9 +2,10 @@
 
 <game_dialogs>
 
-    <dialog id="gfcmod_companion_in_need">
+    <dialog id="gfcmod_companion_in_need_delivery">
         <precondition>dialogs_axr_companion.is_actor_companion</precondition>
-        <precondition>gfcmod.is_companion_in_need</precondition>
+        <precondition>gfcmod.is_in_gfcmod_companion_tbl</precondition>
+        <precondition>gfcmod.is_companion_in_need_delivery</precondition>
         <phrase_list>
             <phrase id="0"> <!-- actor -->
                 <text>my_custom_dialogue_1_0</text>
@@ -12,6 +13,17 @@
             </phrase>
             <phrase id="1"> <!-- npc -->
                 <text>my_custom_dialogue_1_1</text>
+                <action>gfcmod_tasks.setup_gfcmod_delivery_task</action>
+                <next>3</next>
+                <next>2</next>
+            </phrase>
+            <phrase id="2"> <!-- actor -->
+                <text>gfcmod_companion_in_need_back</text>
+                <action>gfcmod_tasks.decline_gfcmod_delivery_task</action>
+            </phrase>
+            <phrase id="3"> <!-- actor -->
+                <text>gfcmod_companion_accept_task</text>
+                <action>gfcmod_tasks.start_gfcmod_delivery_task</action>
             </phrase>
         </phrase_list>
     </dialog>

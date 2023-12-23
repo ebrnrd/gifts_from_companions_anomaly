@@ -2,6 +2,22 @@
 
 <string_table>
 
+    <string id="my_custom_dialogue_1_0">
+        <text>Do you need something?</text>
+    </string>
+
+    <string id="my_custom_dialogue_1_1">
+        <text>Yeah actually</text>
+    </string>
+
+    <string id="gfcmod_companion_in_need_back">
+        <text>Nevermind</text>
+    </string>
+
+    <string id="gfcmod_companion_accept_task">
+        <text>Yeah! Let's do it.</text>
+    </string>
+
     <string id="gfcmod_companion_settings_open">
         <text>Can I talk to you for a second?</text>
     </string>
