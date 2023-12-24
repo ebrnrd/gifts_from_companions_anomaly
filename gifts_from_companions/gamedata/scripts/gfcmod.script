@@ -20,6 +20,7 @@ local friendship_on_monster_death_mult
 local hide_friendship_messages = false
 local companions_quests_toggle
 local task_timer
+local loan_timer
 local debug_mode = false
 
 -- CONSTANTS --
@@ -69,6 +70,7 @@ function on_option_change()
     calculate_tg_gift_target()
     calculate_tg_friendship_target()
     calculate_tg_task_target()
+    calculate_tg_loan_target()
 end
 
 function on_game_load()
@@ -85,6 +87,7 @@ function load_gfcmod_settings()
     hide_friendship_messages = gfcmod_mcm.get_config("hide_friendship_messages")
     companions_quests_toggle = gfcmod_mcm.get_config("companions_quests_toggle")
     task_timer = gfcmod_mcm.get_config("task_timer")
+    loan_timer = gfcmod_mcm.get_config("loan_timer")
     debug_mode = gfcmod_mcm.get_config("debug_mode")
 end
 
@@ -106,6 +109,11 @@ end
 function calculate_tg_task_target() -- calculate time for next companion task
     local tg = time_global()
     gfcmod_cache_tbl.tg_task_target = tg + task_timer*1000
+end
+
+function calculate_tg_loan_target() -- calculate time for next loan check
+    local tg = time_global()
+    gfcmod_cache_tbl.tg_loan_target = tg + loan_timer*1000
 end
 
 -- Companions manager
@@ -179,92 +187,6 @@ function gfcmod_get_companions_count() -- gets the number of the player's compan
     end
     return #companions_tbl
 end
-
-function gfcmod_set_companion_in_need(companion)
-    local companion_id = companion and companion:id()
-    if not companion_id then return end
-    if not gfcmod_companions_tbl[companion_id] then return end
-    if gfcmod_companions_tbl[companion_id].in_need then return end
-
-    gfcmod_companions_tbl[companion_id].in_need = true
-
-    local obj = level.object_by_id(companion_id)
-    local companion_name = obj:character_name() or "Companion"
-    local msg = companion_name .. ": " .. "Hey man, I need to talk to you when you have a second"
-    news_manager.send_tip(db.actor, msg, nil, nil, show_time)
-
-end
-
-function complete_companion_in_need(first_speaker, second_speaker)
-    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
-    local npc_id = npc:id()
-    if not npc_id then
-        return false
-    end
-    add_friendship(10, "task_complete")
-    gfcmod_reset_companion_stored_need(npc_id)
-end
-
-function decline_companion_in_need(first_speaker, second_speaker)
-    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
-    local npc_id = npc:id()
-    if not npc_id then
-        return false
-    end
-    add_friendship(-5, "task_fail")
-    gfcmod_reset_companion_stored_need(npc_id)
-end
-
-
-function gfcmod_set_companion_in_random_need(companion)
-    local companion_id = companion and companion:id()
-    if not companion_id then return end
-    if not gfcmod_companions_tbl[companion_id] then return end
-    if gfcmod_companions_tbl[companion_id].in_need then return end
-
-    local temp_need_types_tbl = {}
-    local indexed_need_types_tbl = {}
-    local companions_active_needs = {}
-
-
-    -- here I remove the active needs from the possible random needs so we don't have duplicates. It's ugly I know but for now it works
-    for k, v in pairs(companion_needs_type_tbl) do
-        temp_need_types_tbl[v] = true
-    end
-    for i, c in pairs(gfcmod_companions_tbl) do
-        if c.in_need then
-            table.insert( companions_active_needs, c.in_need )
-        end
-    end
-    for k, v in pairs(companions_active_needs) do
-        --printdbg("removed " .. v .. " need_type")
-        temp_need_types_tbl[v] = nil
-    end
-    for k, v in pairs(temp_need_types_tbl) do
-        --printdbg(k)
-        table.insert( indexed_need_types_tbl, k )
-    end
-
-    if not indexed_need_types_tbl or #indexed_need_types_tbl == 0 then return end
-
-    local need_type = indexed_need_types_tbl[math.random(#indexed_need_types_tbl)]
-    gfcmod_companions_tbl[companion_id].in_need = need_type
-    
-    local obj = level.object_by_id(companion_id)
-    local companion_name = obj:character_name() or "Companion"
-    local msg = companion_name .. ": " .. "Hey man, I need to talk to you when you have a second"
-    news_manager.send_tip(db.actor, msg, nil, nil, show_time)
-end
-
-function gfcmod_reset_companion_stored_need(companion_id)
-    if (not gfcmod_companions_tbl[companion_id]) or (not gfcmod_companions_tbl[companion_id].in_need) then return end
-    --save_var( db.actor, gfcmod_companions_tbl[companion_id].active_task_id, nil )
-    gfcmod_companions_tbl[companion_id].in_need = false
-    gfcmod_companions_tbl[companion_id].active_task_id = nil
-    printdbg("Reset companion : " .. companion_id .. " need")
-end
-
-
 
 -- Friendship manager
 
@@ -377,7 +299,7 @@ function reset_temp_friendship()
     empty_table(temp_friendship_p)
 end
 
-
+-- TASK MANAGER
 
 function start_gfcmod_gift_task()
     
@@ -420,10 +342,93 @@ function announce_gfcmod_task()
 end
 ]]--
 
+-- LOAN SYSTEM
+
+function gfcmod_loan_from_companion(first_speaker, second_speaker)
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    if not npc_id then
+        return false
+    end
+
+    local loan_money
+
+    if get_current_friendship_stage() == "normal" then
+        loan_money = math.random(2000,5000)
+    elseif get_current_friendship_stage() == "good" then
+        loan_money = math.random(4000,7000)
+    elseif get_current_friendship_stage() == "excellent" then
+        loan_money = math.random(8000,12000)
+    else
+        loan_money = 500
+    end
+    dialogs.relocate_money(db.actor,tonumber(loan_money),"in")
+    gfcmod_cache_tbl.companion_loan = {npc_id, loan_money}
+    gfcmod_cache_tbl.companion_loan_counter = 0
+    calculate_tg_loan_target()
+end
+
+function pay_companion_loan_back(first_speaker, second_speaker)
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    if not npc_id then
+        return
+    end
+    if (not gfcmod_cache_tbl.companion_loan) then 
+        return
+    end
+    if gfcmod_cache_tbl.companion_loan and gfcmod_cache_tbl.companion_loan[1] == npc_id then
+        local loan_money = gfcmod_cache_tbl.companion_loan[2]
+        dialogs.relocate_money(npc,tonumber(loan_money),"out")
+        gfcmod_cache_tbl.companion_loan = nil
+        gfcmod_cache_tbl.companion_loan_counter = 0
+    end
+end
+
+function is_not_companion_loan(first_speaker, second_speaker)
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    if not npc_id then
+        return false
+    end
+    if (not gfcmod_cache_tbl.companion_loan) then 
+        return true
+    end
+    if gfcmod_cache_tbl.companion_loan then
+        return false
+    end
+end
+
+function is_companion_loan(first_speaker, second_speaker)
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    if not npc_id then
+        return false
+    end
+    if (not gfcmod_cache_tbl.companion_loan) then 
+        return false
+    end
+    if gfcmod_cache_tbl.companion_loan[1] == npc_id then 
+        return true
+    end
+end
+
+function has_companion_loan_money(first_speaker, second_speaker)
+	if not gfcmod_cache_tbl.companion_loan then return false end
+    
+    local loan_money = gfcmod_cache_tbl.companion_loan[2]
+	
+	if (first_speaker:money() >= loan_money) then
+		return true
+	end
+	return false
+end
+
+
 -- ============= DIALOG SYSTEM ================= THANKS TO NLTP_ASHES FOR THE HELP
 
 function add_my_dialog(character_id, dialog_list)
-    dialog_list:add("gfcmod_companion_in_need")
+    --dialog_list:add("gfcmod_companion_in_need")
     dialog_list:add("gfcmod_companion_settings")
  end
 
@@ -453,6 +458,9 @@ function is_companion_in_need(first_speaker, second_speaker)
         return true
     end
 end
+
+
+
 
 --[[
 
@@ -668,6 +676,14 @@ function actor_on_first_update() -- here I check if the variables saved in cache
         gfcmod_cache_tbl.tg_task_target = gfcmod_cache_tbl.tg_task_target - (gfcmod_cache_tbl.tg_last - tg)
     end
 
+    if not gfcmod_cache_tbl.tg_loan_target or gfcmod_cache_tbl.tg_loan_target == 0 then
+        gfcmod_cache_tbl.tg_loan_target = 0
+        calculate_tg_loan_target()
+    elseif is_first_load and gfcmod_cache_tbl.tg_last and gfcmod_cache_tbl.tg_last ~= 0 then
+        local tg = time_global()
+        gfcmod_cache_tbl.tg_loan_target = gfcmod_cache_tbl.tg_loan_target - (gfcmod_cache_tbl.tg_last - tg)
+    end
+
     if not gfcmod_cache_tbl.companion_task_active or gfcmod_cache_tbl.companion_task_active == false then
         gfcmod_cache_tbl.companion_task_active = false
     elseif gfcmod_cache_tbl.companion_task_active and gfcmod_cache_tbl.companion_task_active == true then
@@ -753,6 +769,16 @@ function actor_on_update() -- here we check the timers, when a timer is lower th
         calculate_tg_task_target()
     end
 
+    if tg >= gfcmod_cache_tbl.tg_loan_target and gfcmod_cache_tbl.companion_loan then
+        
+        gfcmod_cache_tbl.companion_loan_counter = gfcmod_cache_tbl.companion_loan_counter + 1
+        local companion_id = gfcmod_cache_tbl.companion_loan and gfcmod_cache_tbl.companion_loan[1]
+        local companion_obj = companion_id and level.object_by_id(companion_id)
+        add_friendship(-gfcmod_cache_tbl.companion_loan_counter, "loan")
+        local msg = "You owe money to X companion. Friendship decreased by " .. tostring(gfcmod_cache_tbl.companion_loan_counter)
+        news_manager.send_tip(db.actor, msg, nil, companion_obj, show_time, companion_obj:id())
+        calculate_tg_loan_target()
+    end
 end
 
 function squad_on_npc_death(squad, se_obj, killer) 
@@ -846,7 +872,95 @@ function squad_on_npc_death(squad, se_obj, killer)
     end
 end
 
+--[[
 
+NEEDS SYSTEM 
+
+function gfcmod_set_companion_in_need(companion)
+    local companion_id = companion and companion:id()
+    if not companion_id then return end
+    if not gfcmod_companions_tbl[companion_id] then return end
+    if gfcmod_companions_tbl[companion_id].in_need then return end
+
+    gfcmod_companions_tbl[companion_id].in_need = true
+
+    local obj = level.object_by_id(companion_id)
+    local companion_name = obj:character_name() or "Companion"
+    local msg = companion_name .. ": " .. "Hey man, I need to talk to you when you have a second"
+    news_manager.send_tip(db.actor, msg, nil, nil, show_time)
+
+end
+
+function complete_companion_in_need(first_speaker, second_speaker)
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    if not npc_id then
+        return false
+    end
+    add_friendship(10, "task_complete")
+    gfcmod_reset_companion_stored_need(npc_id)
+end
+
+function decline_companion_in_need(first_speaker, second_speaker)
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    if not npc_id then
+        return false
+    end
+    add_friendship(-5, "task_fail")
+    gfcmod_reset_companion_stored_need(npc_id)
+end
+
+
+function gfcmod_set_companion_in_random_need(companion)
+    local companion_id = companion and companion:id()
+    if not companion_id then return end
+    if not gfcmod_companions_tbl[companion_id] then return end
+    if gfcmod_companions_tbl[companion_id].in_need then return end
+
+    local temp_need_types_tbl = {}
+    local indexed_need_types_tbl = {}
+    local companions_active_needs = {}
+
+
+    -- here I remove the active needs from the possible random needs so we don't have duplicates. It's ugly I know but for now it works
+    for k, v in pairs(companion_needs_type_tbl) do
+        temp_need_types_tbl[v] = true
+    end
+    for i, c in pairs(gfcmod_companions_tbl) do
+        if c.in_need then
+            table.insert( companions_active_needs, c.in_need )
+        end
+    end
+    for k, v in pairs(companions_active_needs) do
+        --printdbg("removed " .. v .. " need_type")
+        temp_need_types_tbl[v] = nil
+    end
+    for k, v in pairs(temp_need_types_tbl) do
+        --printdbg(k)
+        table.insert( indexed_need_types_tbl, k )
+    end
+
+    if not indexed_need_types_tbl or #indexed_need_types_tbl == 0 then return end
+
+    local need_type = indexed_need_types_tbl[math.random(#indexed_need_types_tbl)]
+    gfcmod_companions_tbl[companion_id].in_need = need_type
+    
+    local obj = level.object_by_id(companion_id)
+    local companion_name = obj:character_name() or "Companion"
+    local msg = companion_name .. ": " .. "Hey man, I need to talk to you when you have a second"
+    news_manager.send_tip(db.actor, msg, nil, nil, show_time)
+end
+
+function gfcmod_reset_companion_stored_need(companion_id)
+    if (not gfcmod_companions_tbl[companion_id]) or (not gfcmod_companions_tbl[companion_id].in_need) then return end
+    --save_var( db.actor, gfcmod_companions_tbl[companion_id].active_task_id, nil )
+    gfcmod_companions_tbl[companion_id].in_need = false
+    gfcmod_companions_tbl[companion_id].active_task_id = nil
+    printdbg("Reset companion : " .. companion_id .. " need")
+end
+
+]]--
 
 --================== CALLBACKS REGISTRATION =====================
 function on_game_start()

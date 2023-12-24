@@ -2,54 +2,6 @@
 
 <string_table>
 
-    <string id="my_custom_dialogue_1_0">
-        <text>Do you need something?</text>
-    </string>
-
-    <string id="my_custom_dialogue_1_1">
-        <text>Yeah actually</text>
-    </string>
-
-    <string id="gfcmod_companion_in_need_open">
-        <text>Hey! You needed something?</text>
-    </string>
-
-    <string id="gfcmod_companion_in_need_back">
-        <text>Yeah now is not a good time, maybe later.</text>
-    </string>
-    
-    <string id="gfcmod_companion_in_need_response_0">
-        <text>Yeah... This last period has been very though, I lost a friend recently to the Zone.</text>
-    </string>
-
-    <string id="gfcmod_companion_in_need_actor_0">
-        <text>Damn that must be hard, I know we're not having the time of our life here.</text>
-    </string>
-
-    <string id="gfcmod_companion_in_need_response_1">
-        <text>I guess at least we still have each other, for now...</text>
-    </string>
-
-    <string id="gfcmod_companion_in_need_actor_1">
-        <text>Hey! We can do this, alright?</text>
-    </string>
-
-    <string id="gfcmod_companion_in_need_response_2">
-        <text>Yes. You're right. Thank you for taking the time to listen, I'm starting to enjoy having you in the squad.</text>
-    </string>
-
-    <string id="gfcmod_companion_in_need_end_back">
-        <text>Miao miao</text>
-    </string>
-
-    <string id="gfcmod_companion_accept_task">
-        <text>Yeah! Let's do it.</text>
-    </string>
-
-    <string id="gfcmod_companion_already_given_task">
-        <text>You already agreed to help me, don't you remember?</text>
-    </string>
-
     <string id="gfcmod_companion_settings_open">
         <text>Can I talk to you for a second?</text>
     </string>
@@ -105,6 +57,23 @@
     <string id="gfcmod_change_gifts_category_final_response">
         <text>Sure, my friend! I'll find something alright.</text>
     </string>
+
+    <string id="gfcmod_ask_for_loan">
+        <text>I was wondering if you could lend me some money.</text>
+    </string>
+
+    <string id="gfcmod_confirm_loan_response">
+        <text>Sure! This is all I can do, no interests. Just don't make me wait too long to have them back.</text>
+    </string>
+
+    <string id="gfcmod_pay_back_loan">
+        <text>I have your money back, thanks for the help!</text>
+    </string>
+
+    <string id="gfcmod_pay_back_loan_response">
+        <text>You're welcome, let me know in the future if you need anything.</text>
+    </string>
+
 
 
 </string_table>

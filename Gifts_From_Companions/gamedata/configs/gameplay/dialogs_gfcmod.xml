@@ -2,101 +2,6 @@
 
 <game_dialogs>
 
-    <dialog id="gfcmod_companion_in_need">
-        <precondition>dialogs_axr_companion.is_actor_companion</precondition>
-        <precondition>gfcmod.is_in_gfcmod_companion_tbl</precondition>
-        <precondition>gfcmod.is_companion_in_need</precondition>
-        <phrase_list>
-            <phrase id="0"> <!-- actor -->
-                <text>gfcmod_companion_in_need_open</text> <!-- hey you needed something -->
-                <next>1</next>
-            </phrase>
-            <phrase id="1"> <!-- npc -->
-                <text>gfcmod_companion_in_need_response_0</text> <!-- yes, I'm sorry to bother you, can we talk? -->
-                <next>12</next>
-                <next>2</next>
-            </phrase>
-            <phrase id="2"> <!-- actor -->
-                <text>gfcmod_companion_in_need_back</text> <!-- yeah now is not a good time, maybe later. -->
-                <action>gfcmod.decline_companion_in_need</action>
-            </phrase>
-            <phrase id="12"> <!-- actor -->
-                <text>gfcmod_companion_in_need_actor_0</text> <!-- sure! what's up? -->
-                <next>13</next>
-            </phrase>
-            <phrase id="13"> <!-- npc -->
-                <text>gfcmod_companion_in_need_response_1</text> <!-- I don't know man, I'm just feeling a bit down lately. -->
-                <next>14</next>
-            </phrase>     
-            <phrase id="14"> <!-- actor -->
-                <text>gfcmod_companion_in_need_actor_1</text>  <!-- I'm sorry to hear that, at least we got each other. -->
-                <next>15</next>
-            </phrase>
-            <phrase id="15"> <!-- npc -->
-                <text>gfcmod_companion_in_need_response_2</text> <!-- I guess so, well thanks for listening. -->
-                <next>9</next>
-            </phrase>
-            <phrase id="9"> <!-- actor -->
-                <text>gfcmod_companion_in_need_end_back</text> <!-- You're welcome friend. -->      
-                <action>gfcmod.complete_companion_in_need</action>
-            </phrase>
-        </phrase_list>
-    </dialog>
-
-    <dialog id="gfcmod_companion_in_need_delivery">
-        <precondition>dialogs_axr_companion.is_actor_companion</precondition>
-        <precondition>gfcmod.is_in_gfcmod_companion_tbl</precondition>
-        <precondition>gfcmod.is_companion_in_need_delivery</precondition>
-        <precondition>gfcmod.is_companion_task_not_active</precondition>
-        <phrase_list>
-            <phrase id="0"> <!-- actor -->
-                <text>my_custom_dialogue_1_0</text>
-                <next>1</next>
-            </phrase>
-            <phrase id="1"> <!-- npc -->
-                <text>my_custom_dialogue_1_1</text>
-                <action>gfcmod_tasks_delivery.setup_gfcmod_delivery_task</action>
-                <next>3</next>
-                <next>2</next>
-            </phrase>
-            <phrase id="2"> <!-- actor -->
-                <text>gfcmod_companion_in_need_back</text>
-                <action>gfcmod_tasks_delivery.decline_gfcmod_delivery_task</action>
-            </phrase>
-            <phrase id="3"> <!-- actor -->
-                <text>gfcmod_companion_accept_task</text>
-                <action>gfcmod_tasks_delivery.start_gfcmod_delivery_task</action>
-            </phrase>
-        </phrase_list>
-    </dialog>
-
-    <dialog id="gfcmod_companion_in_need_bounty">
-        <precondition>dialogs_axr_companion.is_actor_companion</precondition>
-        <precondition>gfcmod.is_in_gfcmod_companion_tbl</precondition>
-        <precondition>gfcmod.is_companion_in_need_bounty</precondition>
-        <precondition>gfcmod.is_companion_task_not_active</precondition>
-        <phrase_list>
-            <phrase id="0"> <!-- actor -->
-                <text>my_custom_dialogue_1_0</text>
-                <next>1</next>
-            </phrase>
-            <phrase id="1"> <!-- npc -->
-                <text>my_custom_dialogue_1_1</text>
-                <action>gfcmod_tasks.setup_gfcmod_bounty_task</action>
-                <next>3</next>
-                <next>2</next>
-            </phrase>
-            <phrase id="2"> <!-- actor -->
-                <text>gfcmod_companion_in_need_back</text>
-                <action>gfcmod_tasks.decline_gfcmod_bounty_task</action>
-            </phrase>
-            <phrase id="3"> <!-- actor -->
-                <text>gfcmod_companion_accept_task</text>
-                <action>gfcmod_tasks.start_gfcmod_bounty_task</action>
-            </phrase>
-        </phrase_list>
-    </dialog>
-
     <dialog id="gfcmod_companion_settings">
         <precondition>dialogs_axr_companion.is_actor_companion</precondition>
         <precondition>gfcmod.is_in_gfcmod_companion_tbl</precondition>
@@ -108,6 +13,8 @@
             <phrase id="1"> <!-- npc -->
                 <text>gfcmod_companion_settings_open_response</text>
                 <next>3</next>
+                <next>5</next>
+                <next>7</next>
                 <next>2</next>
             </phrase>
             <phrase id="2"> <!-- actor -->
@@ -179,6 +86,26 @@
             </phrase>
             <phrase id="401"> <!-- npc -->
                 <text>gfcmod_change_gifts_category_final_response</text>
+            </phrase>
+            <phrase id="5"> <!-- actor -->
+                <precondition>gfcmod.is_not_companion_loan</precondition>
+                <precondition>gfcmod.is_friendship_stage_at_least_normal</precondition>
+                <text>gfcmod_ask_for_loan</text>
+                <next>6</next>
+            </phrase>
+            <phrase id="6"> <!-- npc -->
+                <text>gfcmod_confirm_loan_response</text>
+                <action>gfcmod.gfcmod_loan_from_companion</action>
+            </phrase>
+            <phrase id="7"> <!-- actor -->
+                <precondition>gfcmod.is_companion_loan</precondition>
+                <precondition>gfcmod.has_companion_loan_money</precondition>
+                <text>gfcmod_pay_back_loan</text>
+                <action>gfcmod.pay_companion_loan_back</action>
+                <next>8</next>
+            </phrase>   
+            <phrase id="8"> <!-- npc -->
+                <text>gfcmod_pay_back_loan_response</text>
             </phrase>            
         </phrase_list>
     </dialog>

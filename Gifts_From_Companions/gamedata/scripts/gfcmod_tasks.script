@@ -547,47 +547,7 @@ task_status_functor.actor_has_gfcmod_gift_item = function(tsk,task_id)
 	end 
 end
 
--- DELIVERY TASK
 
-function setup_gfcmod_bounty_task()
-    xr_effects.setup_bounty_task(nil, nil, {"simulation_task_gfcmod_bounty_1", true, true})
-end
-
-function start_gfcmod_bounty_task(first_speaker, second_speaker)
-    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
-    local npc_id = npc:id()
-    if not npc_id then
-        return false
-    end
-    if npc_id and npc_id ~= 0 then
-        task_manager.get_task_manager():give_task("simulation_task_gfcmod_bounty_1", npc_id)
-		gfcmod.set_companion_active_task(npc_id, "simulation_task_gfcmod_bounty_1")
-    end
-end
-
-function decline_gfcmod_task(first_speaker, second_speaker, lost_friendship)
-    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
-    local npc_id = npc:id()
-    if not npc_id then
-        return false
-    end
-	gfcmod.gfcmod_reset_companion_stored_need(npc_id)
-	gfcmod.add_friendship(-lost_friendship, "task_fail")
-end
-
-
-
-function decline_gfcmod_bounty_task(first_speaker, second_speaker)
-	decline_gfcmod_task(first_speaker, second_speaker, 5)
-end
-
-function decline_gfcmod_chat1_task(first_speaker, second_speaker)
-	decline_gfcmod_task(first_speaker, second_speaker, 1)
-end
-
-function decline_gfcmod_chat2_task(first_speaker, second_speaker)
-	decline_gfcmod_task(first_speaker, second_speaker, 1)
-end
 
 xr_effects.gfcmod_reset_companion_need = function(actor,npc,p)
 	local tm = task_manager.get_task_manager()
