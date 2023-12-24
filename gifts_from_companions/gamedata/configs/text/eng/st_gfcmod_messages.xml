@@ -2,7 +2,7 @@
 
 <string_table>
 	
-	<!--STAGES MESSAGES-->
+	<!--GIFTS MESSAGES-->
 	
 	<string id="st_gfcmod_bad1">
 		<text>Hey! I found this. I don't really need it so I guess you can have it.</text>
@@ -68,44 +68,62 @@
 		<text>The trials of the Zone are easier with you around. This is for you, my trusted companion.</text>
 	</string>
 
+	<!--FRIENDSHIP MESSAGES-->
+
 	<string id="st_gfcmod_friendship_increase_basic">
-		<text>Recent events increased the friendship in your squad:</text>
+		<text>Recent events increased the friendship in your squad</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_increase_passive">
-		<text>Spending time together increased the friendship in your squad:</text>
+		<text>Spending time together increased the friendship in your squad</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_increase_revenge">
-		<text>You avenged the death of %s. Friendship increased:</text>
+		<text>You avenged the death of %s. Friendship increased</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_decrease_revenge">
-		<text>Even though you avenged the death of %s, the loss was too much for the squad. Friendship decrased:</text>
+		<text>Even though you avenged the death of %s, the loss was too much for the squad. Friendship decrased</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_increase_companion_death_good">
-		<text>The death of your companion made your squad more close. Friendship increased:</text>
+		<text>The death of your companion made your squad more close. Friendship increased</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_decrease_basic">
-		<text>Recent events lowered the friendship in your squad:</text>
+		<text>Recent events lowered the friendship in your squad</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_decrease_companion_death_bad">
-		<text>The death of your companion destroyed the spirits of your squad. Friendship halved:</text>
+		<text>The death of your companion destroyed the spirits of your squad. Friendship halved</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_decrease_task_fail">
-		<text>You let down your companion. Friendship decreased:</text>
+		<text>You let down your companion. Friendship decreased</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_increase_task_complete">
-		<text>You helped out your companion. Friendship increased:</text>
+		<text>You helped out your companion. Friendship increased</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_stage_changed">
 		<text>New friendship stage:</text>
 	</string>
+	
+	<string id="st_gfcmod_friendship_stage_bad">
+		<text>Bad</text>
+	</string>
 
+	<string id="st_gfcmod_friendship_stage_normal">
+		<text>Normal</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_stage_good">
+		<text>Good</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_stage_excellent">
+		<text>Excellent</text>
+	</string>
+	
 </string_table>

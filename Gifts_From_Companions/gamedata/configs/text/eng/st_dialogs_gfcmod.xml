@@ -10,12 +10,44 @@
         <text>Yeah actually</text>
     </string>
 
+    <string id="gfcmod_companion_in_need_open">
+        <text>Hey! You needed something?</text>
+    </string>
+
     <string id="gfcmod_companion_in_need_back">
-        <text>Nevermind</text>
+        <text>Yeah now is not a good time, maybe later.</text>
+    </string>
+    
+    <string id="gfcmod_companion_in_need_response_0">
+        <text>Yeah... This last period has been very though, I lost a friend recently to the Zone.</text>
+    </string>
+
+    <string id="gfcmod_companion_in_need_actor_0">
+        <text>Damn that must be hard, I know we're not having the time of our life here.</text>
+    </string>
+
+    <string id="gfcmod_companion_in_need_response_1">
+        <text>I guess at least we still have each other, for now...</text>
+    </string>
+
+    <string id="gfcmod_companion_in_need_actor_1">
+        <text>Hey! We can do this, alright?</text>
+    </string>
+
+    <string id="gfcmod_companion_in_need_response_2">
+        <text>Yes. You're right. Thank you for taking the time to listen, I'm starting to enjoy having you in the squad.</text>
+    </string>
+
+    <string id="gfcmod_companion_in_need_end_back">
+        <text>Miao miao</text>
     </string>
 
     <string id="gfcmod_companion_accept_task">
         <text>Yeah! Let's do it.</text>
+    </string>
+
+    <string id="gfcmod_companion_already_given_task">
+        <text>You already agreed to help me, don't you remember?</text>
     </string>
 
     <string id="gfcmod_companion_settings_open">

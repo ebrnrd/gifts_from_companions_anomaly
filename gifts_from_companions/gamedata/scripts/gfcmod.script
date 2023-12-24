@@ -26,9 +26,9 @@ local debug_mode = false
 local show_time = 5000 -- how long the notifications stay on the screen
 local max_gift_distance = 30 --max distance from companion to player to give gift
 local random_messages_number = 5 -- the total number of gift phrases in st_gfcmod_messages.xml
-local temp_friendship_timer = 20 -- seconds between each temp friendship check
+local temp_friendship_timer = 30 -- seconds between each temp friendship check
 
-local companion_needs_type_tbl = {"delivery", "delivery"}
+local companion_needs_type_tbl = {"delivery", "bounty"}
 
 local clr_g = utils_xml.get_color("d_green")
 local clr_w = utils_xml.get_color("white")
@@ -148,7 +148,9 @@ function gfcmod_update_companions_tbl()
 
     for i, c in pairs(gfcmod_companions_tbl) do
         local category_found = c.category or "category not found"
-        --printdbg("Companion id: " .. i .. " | Category: " .. category_found)
+        local in_need = c.in_need and "true" or "false"
+        local active_task_id = c.active_task_id or "no task assigned"
+        printdbg("Companion id: " .. i .. " | Category: " .. category_found .. " | Need: " .. in_need .. " | Task: " .. active_task_id)
     end
 end
 
@@ -178,14 +180,75 @@ function gfcmod_get_companions_count() -- gets the number of the player's compan
     return #companions_tbl
 end
 
-function gfcmod_set_companion_in_random_need(companion)
-    local companion_id = companion:id()
+function gfcmod_set_companion_in_need(companion)
+    local companion_id = companion and companion:id()
     if not companion_id then return end
     if not gfcmod_companions_tbl[companion_id] then return end
     if gfcmod_companions_tbl[companion_id].in_need then return end
-    
-    local need_type = companion_needs_type_tbl[math.random(#companion_needs_type_tbl)]
-    gfcmod_companions_tbl[companion_id].in_need = "delivery"
+
+    gfcmod_companions_tbl[companion_id].in_need = true
+
+    local obj = level.object_by_id(companion_id)
+    local companion_name = obj:character_name() or "Companion"
+    local msg = companion_name .. ": " .. "Hey man, I need to talk to you when you have a second"
+    news_manager.send_tip(db.actor, msg, nil, nil, show_time)
+
+end
+
+function complete_companion_in_need(first_speaker, second_speaker)
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    if not npc_id then
+        return false
+    end
+    add_friendship(10, "task_complete")
+    gfcmod_reset_companion_stored_need(npc_id)
+end
+
+function decline_companion_in_need(first_speaker, second_speaker)
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    if not npc_id then
+        return false
+    end
+    add_friendship(-5, "task_fail")
+    gfcmod_reset_companion_stored_need(npc_id)
+end
+
+
+function gfcmod_set_companion_in_random_need(companion)
+    local companion_id = companion and companion:id()
+    if not companion_id then return end
+    if not gfcmod_companions_tbl[companion_id] then return end
+    if gfcmod_companions_tbl[companion_id].in_need then return end
+
+    local temp_need_types_tbl = {}
+    local indexed_need_types_tbl = {}
+    local companions_active_needs = {}
+
+
+    -- here I remove the active needs from the possible random needs so we don't have duplicates. It's ugly I know but for now it works
+    for k, v in pairs(companion_needs_type_tbl) do
+        temp_need_types_tbl[v] = true
+    end
+    for i, c in pairs(gfcmod_companions_tbl) do
+        if c.in_need then
+            table.insert( companions_active_needs, c.in_need )
+        end
+    end
+    for k, v in pairs(companions_active_needs) do
+        --printdbg("removed " .. v .. " need_type")
+        temp_need_types_tbl[v] = nil
+    end
+    for k, v in pairs(temp_need_types_tbl) do
+        --printdbg(k)
+        table.insert( indexed_need_types_tbl, k )
+    end
+
+    if not indexed_need_types_tbl or #indexed_need_types_tbl == 0 then return end
+
+    local need_type = indexed_need_types_tbl[math.random(#indexed_need_types_tbl)]
+    gfcmod_companions_tbl[companion_id].in_need = need_type
     
     local obj = level.object_by_id(companion_id)
     local companion_name = obj:character_name() or "Companion"
@@ -194,8 +257,10 @@ function gfcmod_set_companion_in_random_need(companion)
 end
 
 function gfcmod_reset_companion_stored_need(companion_id)
-    if not gfcmod_companions_tbl[companion_id] or not gfcmod_companions_tbl[companion_id].in_need then return end
-    gfcmod_companions_tbl[companion_id].in_need = nil
+    if (not gfcmod_companions_tbl[companion_id]) or (not gfcmod_companions_tbl[companion_id].in_need) then return end
+    --save_var( db.actor, gfcmod_companions_tbl[companion_id].active_task_id, nil )
+    gfcmod_companions_tbl[companion_id].in_need = false
+    gfcmod_companions_tbl[companion_id].active_task_id = nil
     printdbg("Reset companion : " .. companion_id .. " need")
 end
 
@@ -242,11 +307,11 @@ function add_friendship(friendship_to_add, type, p) -- friendship_to_add = frien
     end
 
     if not type then
-        msg = strformat(game.translate_string("st_gfcmod_friendship_" .. friendship_increase_or_decrease .. "_basic") .. " " .. gfcmod_cache_tbl.friendship .. "/" .. max_friendship)
+        msg = strformat(game.translate_string("st_gfcmod_friendship_" .. friendship_increase_or_decrease .. "_basic"))
     elseif type == "revenge" and p[1] and p[1] ~= "" then
-        msg = strformat(game.translate_string("st_gfcmod_friendship_" .. friendship_increase_or_decrease .. "_" .. type),p[1] .. " " .. gfcmod_cache_tbl.friendship .. "/" .. max_friendship)     
+        msg = strformat(game.translate_string("st_gfcmod_friendship_" .. friendship_increase_or_decrease .. "_" .. type),p[1])     
     else 
-        msg = strformat(game.translate_string("st_gfcmod_friendship_" .. friendship_increase_or_decrease .. "_" .. type) .. " " .. gfcmod_cache_tbl.friendship .. "/" .. max_friendship)
+        msg = strformat(game.translate_string("st_gfcmod_friendship_" .. friendship_increase_or_decrease .. "_" .. type))
     end 
 
     if not hide_friendship_messages then
@@ -298,8 +363,8 @@ function get_current_friendship_stage() -- returns the name of the current frien
 end
 
 function on_friendship_stage_change()
-    
-    local msg = strformat(gt("st_gfcmod_friendship_stage_changed") .. " " .. get_current_friendship_stage())
+    local current_friendship_stage = get_current_friendship_stage()
+    local msg = strformat(gt("st_gfcmod_friendship_stage_changed") .. " " .. gt("st_gfcmod_friendship_stage_" .. current_friendship_stage))
 
     if not hide_friendship_messages then
         news_manager.send_tip(db.actor, msg, nil, nil, show_time)
@@ -315,8 +380,8 @@ end
 
 
 function start_gfcmod_gift_task()
+    
     local npc = gfcmod_get_random_companion()
-
     gfcmod_tasks.set_stored_npc_task_giver(npc)
     local se_obj = npc and alife( ):object( npc:id( ) )
 	local giver_id = se_obj and se_obj.id
@@ -328,7 +393,14 @@ function reset_gfcmod_companion_task()
     calculate_tg_task_target()
 end
 
-
+function set_companion_active_task(companion_id, task_id)
+    if not companion_id or companion_id == 0 or not task_id then return end
+    if not gfcmod_companions_tbl[companion_id] then return end
+    if not gfcmod_companions_tbl[companion_id].active_task_id or gfcmod_companions_tbl[companion_id].active_task_id == "" then
+        gfcmod_companions_tbl[companion_id].active_task_id = task_id
+        printdbg("Assigned task: " .. task_id .. " to companion: " .. companion_id)
+    end
+end
 
 --[[
 function announce_gfcmod_task()
@@ -351,7 +423,7 @@ end
 -- ============= DIALOG SYSTEM ================= THANKS TO NLTP_ASHES FOR THE HELP
 
 function add_my_dialog(character_id, dialog_list)
-    dialog_list:add("gfcmod_companion_in_need_delivery")
+    dialog_list:add("gfcmod_companion_in_need")
     dialog_list:add("gfcmod_companion_settings")
  end
 
@@ -374,13 +446,32 @@ function is_companion_in_need(first_speaker, second_speaker)
     if not npc_id then
         return false
     end
-    if not (gfcmod_companions_tbl[npc_id] and gfcmod_companions_tbl[npc_id].in_need) then 
+    if (not gfcmod_companions_tbl[npc_id]) or (not gfcmod_companions_tbl[npc_id].in_need) then 
         return false
     end
     if gfcmod_companions_tbl[npc_id] and gfcmod_companions_tbl[npc_id].in_need then
         return true
     end
 end
+
+--[[
+
+function is_companion_task_not_active(first_speaker, second_speaker) -- NON FUNZIONA COME DOVREBBE PER ORA
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    if not npc_id then
+        return false
+    end
+    if not gfcmod_companions_tbl[npc_id] then 
+        return false
+    end
+    if not gfcmod_companions_tbl[npc_id].active_task_id then
+        return true
+    else
+        return false
+    end
+end
+
 
 function is_companion_in_need_delivery(first_speaker, second_speaker)
     local npc = dialogs.who_is_npc(first_speaker, second_speaker)
@@ -395,6 +486,20 @@ function is_companion_in_need_delivery(first_speaker, second_speaker)
         return true
     end
 end
+
+function is_companion_in_need_bounty(first_speaker, second_speaker)
+    local npc = dialogs.who_is_npc(first_speaker, second_speaker)
+    local npc_id = npc:id()
+    if not npc_id then
+        return false
+    end
+    if not (gfcmod_companions_tbl[npc_id] and gfcmod_companions_tbl[npc_id].in_need) then 
+        return false
+    end
+    if gfcmod_companions_tbl[npc_id] and gfcmod_companions_tbl[npc_id].in_need and gfcmod_companions_tbl[npc_id].in_need == "bounty" then
+        return true
+    end
+end ]]--
 
 function is_friendship_stage_at_least_bad()
     if get_current_friendship_stage() == "bad" or get_current_friendship_stage() == "normal" or get_current_friendship_stage() == "good" or get_current_friendship_stage() == "excellent" then 
@@ -531,8 +636,6 @@ function set_companion_gifts_category_ammo(first_speaker, second_speaker)
     end
 end
 
-
-
 -- CALLBACKS
 
 function actor_on_first_update() -- here I check if the variables saved in cache are valid, if they are not (for example when starting a new game), I initialize them.
@@ -591,7 +694,7 @@ function actor_on_update() -- here we check the timers, when a timer is lower th
     local tg = time_global()
 
     gfcmod_update_companions_tbl()
-    
+
     gfcmod_cache_tbl.tg_last = tg -- the engine everytime the actual game is opened, resets the global times, this helps to calculate the delta from the tg from last session
     
     -- if the player doesn't have companions it doesn't run the rest of the code
@@ -642,11 +745,11 @@ function actor_on_update() -- here we check the timers, when a timer is lower th
 
     -- companion tasks timer
     if tg >= gfcmod_cache_tbl.tg_task_target and not gfcmod_cache_tbl.companion_task_active and companions_quests_toggle then
-        --start_gfcmod_gift_task()
-        local random_companion = gfcmod_get_random_companion()
+        start_gfcmod_gift_task()
+        --local random_companion = gfcmod_get_random_companion()
         --gfcmod_set_companion_in_need(random_companion)
-        --gfcmod_cache_tbl.companion_task_active = true
-        gfcmod_set_companion_in_random_need(random_companion)
+        gfcmod_cache_tbl.companion_task_active = true
+        --gfcmod_set_companion_in_need(random_companion)
         calculate_tg_task_target()
     end
 
@@ -743,6 +846,8 @@ function squad_on_npc_death(squad, se_obj, killer)
     end
 end
 
+
+
 --================== CALLBACKS REGISTRATION =====================
 function on_game_start()
     RegisterScriptCallback("actor_on_first_update", actor_on_first_update)
@@ -756,5 +861,6 @@ function on_game_start()
     RegisterScriptCallback("on_specific_character_dialog_list", add_my_dialog)   
 
     is_first_load = true
+
 
 end
