@@ -88,7 +88,7 @@
                 <text>gfcmod_change_gifts_category_final_response</text>
             </phrase>
             <phrase id="5"> <!-- actor -->
-                <precondition>gfcmod.is_not_companion_loan</precondition>
+                <precondition>gfcmod.can_ask_for_companion_loan</precondition>
                 <precondition>gfcmod.is_friendship_stage_at_least_normal</precondition>
                 <text>gfcmod_ask_for_loan</text>
                 <next>6</next>

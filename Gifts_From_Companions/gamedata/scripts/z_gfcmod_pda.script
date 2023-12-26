@@ -1,0 +1,24 @@
+
+local gc = game.translate_string
+
+base_init = ui_pda_relations_tab.pda_relations_tab.InitControls
+function ui_pda_relations_tab.pda_relations_tab:InitControls()
+	base_init(self)
+    xml = CScriptXmlInit()
+    xml:ParseFile("ui_pda_friendship.xml")
+
+    self.friendship_container = self.friendship_container or xml:InitTextWnd("friendship_container", self)
+
+end
+
+
+base_reset = ui_pda_relations_tab.pda_relations_tab.Reset
+function ui_pda_relations_tab.pda_relations_tab:Reset()
+	base_reset(self)
+    if gfcmod.gfcmod_get_companions_count() <= 0 then
+        self.friendship_container:SetText("")
+    else
+        local friendship_and_max_friendship = "(" .. gfcmod.get_current_friendship() .. "/" .. gfcmod.get_max_friendship() .. ")"
+        self.friendship_container:SetText(gc("st_ui_gfcmod_friendship_label") .. " " .. gc("st_ui_gfcmod_friendship_" .. gfcmod.get_current_friendship_stage()) .. " " .. tostring(friendship_and_max_friendship))
+    end
+end

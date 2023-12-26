@@ -2,64 +2,7 @@
 
 <string_table>
 
-	<!--BASIC MESSAGES (UNUSED)-->
-	<string id="st_gfcmod_basic1">
-		<text>Эй, мужик, это заставило меня вспомнить о тебе...</text>
-	</string>
-	
-    <string id="st_gfcmod_basic2">
-		<text>Знаешь что? Спасибо за прекрасное время вместе, вот кое-чего для тебя.</text>
-	</string>	
-
-    <string id="st_gfcmod_basic3">
-		<text>Возьмёшь? Мне от этого никакой пользы.</text>
-	</string>
-
-    <string id="st_gfcmod_basic4">
-		<text>Эй глянь! Глянь что нашёл!</text>
-	</string>
-
-	<string id="st_gfcmod_basic5">
-		<text>Эй, нашёл тут кое-что. Думаю тебя заинтересует.</text>
-	</string>
-
-	<string id="st_gfcmod_basic6">
-		<text>Вот вещица для тебя. Считай это знаком свыше.</text>
-	</string>
-
-	<string id="st_gfcmod_basic7">
-		<text>Нашёл интересный предмет. Теперь он твой.</text>
-	</string>
-
-	<string id="st_gfcmod_basic8">
-		<text>Угадай, на что я наступил? Это сюрприз, бери!</text>
-	</string>
-
-	<string id="st_gfcmod_basic9">
-		<text>Нашёл малость хабара во время ходок. Возьми, друг.</text>
-	</string>
-
-	<string id="st_gfcmod_basic10">
-		<text>Прибрал к рукам кое-что. Твоё, без обязательств.</text>
-	</string>
-
-	<string id="st_gfcmod_basic11">
-		<text>Подарок от зоны! Нашёл во время прошлой ходки.</text>
-	</string>
-
-	<string id="st_gfcmod_basic12">
-		<text>Глянь-ка! Нашёл кое-что, что может тебе пригодиться.</text>
-	</string>
-
-	<string id="st_gfcmod_basic13">
-		<text>У меня для тебя небольшой сюрприз. Наслаждайся!</text>
-	</string>
-
-	<string id="st_gfcmod_basic14">
-		<text>Время для подарка, друг мой! Нашёл кое-что полезное как раз для тебя.</text>
-	</string>
-
-	<!--STAGES MESSAGES-->
+	<!--GIFTS MESSAGES-->
 
 	<string id="st_gfcmod_bad1">
 		<text>Привет! Нашёл это. Мне это действительно не нужно, так что, думаю, ты можешь взять.</text>
@@ -129,12 +72,136 @@
 		<text>Увеличение дружбы:</text>
 	</string>
 
+	<!--FRIENDSHIP MESSAGES-->
+
+	<string id="st_gfcmod_friendship_increase_basic">
+		<text>Недавние события усилили дружбу в вашем отряде.</text>
+	</string>
+
 	<string id="st_gfcmod_friendship_increase_passive">
-		<text>Проведение времени вместе увеличило дружбу в вашем отряде:</text>
+		<text>Время, проведенное вместе, способствовало укреплению дружбы в вашем отряде.</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_increase_revenge">
+		<text>Ты отомстил за смерть %s. Дружба выросла.</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_decrease_revenge">
+		<text>Хоть ты и отомстил за смерть %s, потеря оказалась слишком большой для команды. Дружба уменьшена.</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_increase_companion_death_good">
+		<text>Смерть товарища сделала ваш отряд еще ближе. Дружба выросла.</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_decrease_basic">
-		<text>Уменьшение дружбы:</text>
+		<text>Недавние события снизили уровень дружбы в вашем отряде.</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_decrease_companion_death_bad">
+		<text>Смерть товарища уничтожила дух вашего отряда. Дружба уменьшилась вдвое.</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_decrease_task_fail">
+		<text>Вы подвели своего товарища. Дружба уменьшилась.</text>
+	</string>
+	
+	<string id="st_gfcmod_friendship_decrease_loan">
+		<text>Вы задолжали деньги %s. Дружба уменьшилась.</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_increase_task_complete">
+		<text>Вы помогли своему товарищу. Дружба выросла.</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_stage_changed">
+		<text>Новая стадия дружбы:</text>
+	</string>
+	
+	<string id="st_gfcmod_friendship_stage_bad">
+		<text>Плохая</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_stage_normal">
+		<text>Нормальная</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_stage_good">
+		<text>Хорошая</text>
+	</string>
+
+	<string id="st_gfcmod_friendship_stage_excellent">
+		<text>Отличная</text>
+	</string>
+	
+	
+	<!--LOAN MESSAGES-->
+
+	<string id="gfcmod_loan_reminder_1">
+		<text>Эй, просто напоминаю тебе о деньгах, которые я тебе дал. Не спеши, но не забывай об этом.</text>
+	</string>
+
+	<string id="gfcmod_loan_reminder_2">
+		<text>Слушай, мне не хочется снова поднимать эту тему, но что насчёт денег, которые ты мне должен? Есть шанс, что ты вернёшь их мне в ближайшее время?</text>
+	</string>
+
+	<string id="gfcmod_loan_reminder_3">
+		<text>Эй, я был терпелив, но ситуация с деньгами становится немного напряжённой. Мне бы не помешало их вернуть. Ты можешь это сделать?</text>
+	</string>
+
+	<string id="gfcmod_loan_reminder_4">
+		<text>Ладно, мы уже говорили об этом, и это начинает сказываться на нашей дружбе. Мне нужны эти деньги. Сейчас.</text>
+	</string>
+
+	<string id="gfcmod_loan_reminder_5">
+		<text>Слушай, мне надоело ждать. Ты должен мне деньги, и меня это бесит. Разберись с этим, хорошо? Ладно.</text>
+	</string>
+
+
+	<string id="gfcmod_loan_reminder_6">
+    <text>Время идет, а я все еще жду свои деньги. Серьезно, это уже надоело. Заплати!</text>
+	</string>
+
+	<string id="gfcmod_loan_reminder_7">
+		<text>Ты уже совсем обнаглел. К меня есть терпение, но оно на исходе. Ты должен вернуть эти деньги, немедленно!</text>
+	</string>
+
+	<string id="gfcmod_loan_reminder_8">
+		<text>Господи мужик, какого хрена мои деньги до сих пор у тебя?! Как же ты меня раздражаешь.</text>
+	</string>
+
+	<string id="gfcmod_loan_reminder_9">
+		<text>Это просто смешно. Ты испытываешь нашу дружбу. Верни долг, или отношения между нами будут испорчены.</text>
+	</string>
+
+	<string id="gfcmod_loan_reminder_10">
+		<text>Не могу поверить, что до этого дошло. Ты смешон, верни мне мои деньги!</text>
+	</string>
+
+	<!--COMPANION LEAVE-->
+
+	<string id="gfcmod_companion_leave_actor">
+		<text>Да, я ухожу, ничего не вышло. Теперь ты сам по себе, сталкер.</text>
+	</string>
+
+	<string id="gfcmod_companion_leave_warning_1">
+		<text>Я не знаю, устраивает ли меня эта ситуация, понимаешь? Я подумываю о том, чтобы уйти из отряда.</text>
+	</string>
+
+	<string id="gfcmod_companion_leave_warning_2">
+		<text>Наши пути расходятся. Если ничего не изменится, возможно мне придется идти одному. Просто предупреждаю.</text>
+	</string>
+
+	<string id="gfcmod_companion_leave_warning_3">
+		<text>Не уверен, что оставаться здесь - хорошее решение. Зона опасна, и я не знаю, справимся ли мы с этим.</text>
+	</string>
+
+	<string id="gfcmod_companion_leave_warning_4">
+		<text>Зона непредсказуема, ситуация у нас такая же. Подумываю о том, чтобы немного побыть одному.</text>
+	</string>
+
+	<string id="gfcmod_companion_leave_warning_5">
+		<text>Подумываю о том, чтобы бросить группу.Наши дела плохи.</text>
 	</string>
 
 

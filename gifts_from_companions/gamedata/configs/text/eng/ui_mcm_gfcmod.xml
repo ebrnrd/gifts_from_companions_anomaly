@@ -72,12 +72,25 @@
 	<string id="ui_mcm_gfcmod_task_timer_desc">
 		<text>Seconds that need to pass before receiving a new companion task</text>
 	</string>
+
+	<string id="ui_mcm_gfcmod_companion_leave_settings">
+		<text>Companion Leave Squad System</text>
+	</string>
+	<string id="ui_mcm_gfcmod_companion_leave_toggle">
+		<text>Companion leave squad at low friendship</text>
+	</string>
+	<string id="ui_mcm_gfcmod_companion_leave_toggle_desc">
+		<text>When friendship drops below 0, your companion have a chance to leave the squad</text>
+	</string>
 	
 	<string id="ui_mcm_gfcmod_loan_settings">
 		<text>Companion Loan System</text>
 	</string>
 	<string id="ui_mcm_gfcmod_loan_timer">
 		<text>Companion loan timer</text>
+	</string>
+	<string id="ui_mcm_gfcmod_loan_timer_desc">
+		<text>Seconds between each loan reminder and friendship decrease</text>
 	</string>
 	<string id="ui_mcm_gfcmod_debug_mode">
 		<text>Debug mode</text>

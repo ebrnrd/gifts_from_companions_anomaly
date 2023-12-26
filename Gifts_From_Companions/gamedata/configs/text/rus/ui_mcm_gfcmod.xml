@@ -1,44 +1,98 @@
 <?xml version="1.0" encoding="windows-1251"?>
 
 <string_table>
+
 	<string id="ui_mcm_gfcmod_title">
-		<text>Опции подарков от напарников</text>
+		<text>Настройки подарков от напарников</text>
 	</string>
+
 	<string id="ui_mcm_menu_gfcmod">
 		<text>Подарки от напарников</text>
 	</string>
-	<string id="ui_mcm_gfcmod_desc1">
-		<text>Общие настройки</text>
+
+	<string id="ui_mcm_gfcmod_gifts_settings">
+		<text>Система подарков</text>
 	</string>
 	<string id="ui_mcm_gfcmod_min_timer">
-		<text>Минимальное время до получения нового подарка (секунды)</text>
+		<text>Минимальное время до получения подарка</text>
+	</string>
+	<string id="ui_mcm_gfcmod_min_timer_desc">
+		<text>Минимум секунд, которые должны пройти, прежде чем появится шанс получить новый подарок</text>
 	</string>
 	<string id="ui_mcm_gfcmod_max_timer">
-		<text>Максимальное время до получения нового подарка (секунды)</text>
+		<text>Максимальное время до получения подарков</text>
+	</string>
+	<string id="ui_mcm_gfcmod_max_timer_desc">
+		<text>Максимум секунд, которые должны пройти, прежде чем появится шанс получить новый подарок</text>
 	</string>
 	<string id="ui_mcm_gfcmod_gift_chance">
-		<text>Шанс получить подарок по истечении времени</text>
+		<text>Базовый шанс получения подарка</text>
 	</string>
-	<string id="ui_mcm_gfcmod_debug_mode">
-		<text>Дебаг мод</text>
+	<string id="ui_mcm_gfcmod_gift_chance_desc">
+		<text>Шанс получить подарок на самой низкой стадии дружбы</text>
+	</string>
+
+	<string id="ui_mcm_gfcmod_friendship_settings">
+		<text>Система дружбы</text>
 	</string>
 	<string id="ui_mcm_gfcmod_friendship_timer">
-		<text>Время между пассивными увеличениями дружбы (секунды)</text>
+		<text>Время между пассивным приростом дружбы</text>
 	</string>
-	<string id="ui_mcm_gfcmod_debug_mode">
-		<text>Режим отладки</text>
+	<string id="ui_mcm_gfcmod_friendship_timer_desc">
+		<text>Количество секунд между каждым пассивной увеличением дружбы</text>
 	</string>
-	<string id="ui_mcm_gfcmod_friendship_on_npc_death">
-		<text>Приобретение дружбы при убийстве вражеского NPC</text>
+	<string id="ui_mcm_gfcmod_friendship_on_npc_death_mult">
+		<text>Множитель дружбы при смерти врага</text>
 	</string>
-	<string id="ui_mcm_gfcmod_friendship_on_monster_death">
-		<text>Приобретение дружбы при убийстве вражеского мутанта</text>
+	<string id="ui_mcm_gfcmod_friendship_on_npc_death_mult_desc">
+		<text>Множитель дружбы, добавляемый при убийстве вражеского NPC</text>
 	</string>
-	<string id="ui_mcm_gfcmod_friendship_on_companion_death">
-		<text>Потеря дружбы при смерти одного из спутников</text>
+	<string id="ui_mcm_gfcmod_friendship_on_monster_death_mult">
+		<text>Множитель дружбы при смерти мутанта</text>
+	</string>
+	<string id="ui_mcm_gfcmod_friendship_on_monster_death_mult_desc">
+		<text>Множитель дружбы, добавляемый при убийстве мутанта</text>
 	</string>
 	<string id="ui_mcm_gfcmod_hide_friendship_messages">
 		<text>Скрыть уведомления об изменении уровня дружбы</text>
 	</string>
 
+	<string id="ui_mcm_gfcmod_tasks_settings">
+		<text>Система заданий напарников</text>
+	</string>
+	<string id="ui_mcm_gfcmod_companions_quests_toggle">
+		<text>Задания от напарников</text>
+	</string>
+	<string id="ui_mcm_gfcmod_companions_quests_toggle_desc">
+		<text>Включите или выключите систему заданий от напарников</text>
+	</string>
+	<string id="ui_mcm_gfcmod_task_timer">
+		<text>Время до появления нового задания</text>
+	</string>
+	<string id="ui_mcm_gfcmod_task_timer_desc">
+		<text>Секунды, которые должны пройти до получения нового задания напарника</text>
+	</string>
+
+	<string id="ui_mcm_gfcmod_companion_leave_settings">
+		<text>Система покидания отряда напарником</text>
+	</string>
+	<string id="ui_mcm_gfcmod_companion_leave_toggle">
+		<text>Напарник покидает отряд при низком уровне дружбы</text>
+	</string>
+	<string id="ui_mcm_gfcmod_companion_leave_toggle_desc">
+		<text>Когда дружба падает ниже 0, у вашего товарища появляется шанс покинуть отряд</text>
+	</string>
+	
+	<string id="ui_mcm_gfcmod_loan_settings">
+		<text>Система займа у напарников</text>
+	</string>
+	<string id="ui_mcm_gfcmod_loan_timer">
+		<text>Время до нового напоминания о долге</text>
+	</string>
+	<string id="ui_mcm_gfcmod_loan_timer_desc">
+		<text>Секунды между напоминанием о долге и уменьшения дружбы</text>
+	</string>
+	<string id="ui_mcm_gfcmod_debug_mode">
+		<text>Дебаг мод</text>
+	</string>
 </string_table>

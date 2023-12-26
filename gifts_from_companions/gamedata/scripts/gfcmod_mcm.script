@@ -22,6 +22,10 @@ function on_mcm_load()
             {id="divider", type="line" },
             {id = "title",                          type = "desc", text = "ui_mcm_gfcmod_loan_settings"},
             {id = "loan_timer",                     type = "track", val = 2, min=1,     max=3600,     step=1,     def = 1200},
+
+            {id="divider", type="line" },
+            {id = "title",                          type = "desc", text = "ui_mcm_gfcmod_companion_leave_settings"},
+            {id = "companion_leave_toggle",         type = "check", val = 1, def=true},
             
             {id="divider", type="line" },
             {id = "debug_mode",                     type = "check", val = 1, def=false},
@@ -43,6 +47,7 @@ local defaults = {
     ["companions_quests_toggle"] = true,
     ["task_timer"] = 900,
     ["loan_timer"] = 1200,
+    ["companion_leave_toggle"] = true,
     ["debug_mode"] = false,
 }
 

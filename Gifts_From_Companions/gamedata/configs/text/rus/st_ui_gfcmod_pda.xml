@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="windows-1251"?>
+
+<string_table>
+
+    <string id="st_ui_gfcmod_friendship_label">
+		<text>Дружба: </text>
+	</string>
+    <string id="st_ui_gfcmod_friendship_bad">
+		<text>Плохая</text>
+	</string>
+    <string id="st_ui_gfcmod_friendship_normal">
+		<text>Нормальная</text>
+	</string>
+    <string id="st_ui_gfcmod_friendship_good">
+		<text>Хорошая</text>
+	</string>
+    <string id="st_ui_gfcmod_friendship_excellent">
+		<text>Отличная</text>
+	</string>
+
+</string_table>

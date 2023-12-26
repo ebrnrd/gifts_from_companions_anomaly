@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="windows-1251"?>
+
+<string_table>
+
+	<string id="gfcmod_gift_task_1_title_static">
+		<text>Просьба напарника</text>
+	</string>
+
+	<string id="gfcmod_gift_task_1_descr_static">
+		<text>Одному из твоих напарников что-то нужно и он попросил тебя о помощи.</text>
+	</string>	
+
+	
+	<string id="gfcmod_gift_task_1_title">
+		<text>Просьба напарника: найти %s для %s</text>
+	</string>
+	
+    <string id="gfcmod_gift_task_1_descr">
+		<text>%s нужно %s и попросил меня принести немного</text>
+	</string>	
+
+	<string id="gfcmod_gift_task_1_about">
+		<text>This is the request about</text>
+	</string>
+
+	<string id="gfcmod_gift_task_1_job">
+		<text>This is the request job</text>
+	</string>
+
+	<string id="gfcmod_gift_task_1_fetch_about">
+		<text>This is the fetch description</text>
+	</string>
+
+	<string id="gfcmod_gift_task_1_finish">
+		<text>Спасибо, друг мой. Я это очень ценю.</text>
+	</string>
+
+</string_table>

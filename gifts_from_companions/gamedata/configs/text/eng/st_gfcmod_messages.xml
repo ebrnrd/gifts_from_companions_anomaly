@@ -71,39 +71,43 @@
 	<!--FRIENDSHIP MESSAGES-->
 
 	<string id="st_gfcmod_friendship_increase_basic">
-		<text>Recent events increased the friendship in your squad</text>
+		<text>Recent events increased the friendship in your squad.</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_increase_passive">
-		<text>Spending time together increased the friendship in your squad</text>
+		<text>Spending time together increased the friendship in your squad.</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_increase_revenge">
-		<text>You avenged the death of %s. Friendship increased</text>
+		<text>You avenged the death of %s. Friendship increased.</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_decrease_revenge">
-		<text>Even though you avenged the death of %s, the loss was too much for the squad. Friendship decrased</text>
+		<text>Even though you avenged the death of %s, the loss was too much for the squad. Friendship decrased.</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_increase_companion_death_good">
-		<text>The death of your companion made your squad more close. Friendship increased</text>
+		<text>The death of your companion made your squad more close. Friendship increased.</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_decrease_basic">
-		<text>Recent events lowered the friendship in your squad</text>
+		<text>Recent events lowered the friendship in your squad.</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_decrease_companion_death_bad">
-		<text>The death of your companion destroyed the spirits of your squad. Friendship halved</text>
+		<text>The death of your companion destroyed the spirits of your squad. Friendship halved.</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_decrease_task_fail">
-		<text>You let down your companion. Friendship decreased</text>
+		<text>You let down your companion. Friendship decreased.</text>
+	</string>
+	
+	<string id="st_gfcmod_friendship_decrease_loan">
+		<text>You owe money to %s. Friendship decreased.</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_increase_task_complete">
-		<text>You helped out your companion. Friendship increased</text>
+		<text>You helped out your companion. Friendship increased.</text>
 	</string>
 
 	<string id="st_gfcmod_friendship_stage_changed">
@@ -126,4 +130,69 @@
 		<text>Excellent</text>
 	</string>
 	
+	
+	<string id="gfcmod_loan_reminder_1">
+		<text>Hey, just reminding you about the money I gave you. No rush, but you know, don't forget about it.</text>
+	</string>
+
+	<string id="gfcmod_loan_reminder_2">
+		<text>Listen, I hate to bring it up again, but that money you owe me? Any chance you could get it back to me soon?</text>
+	</string>
+
+	<string id="gfcmod_loan_reminder_3">
+		<text>Hey, I've been patient, but this money situation is getting a bit tense. I could really use it back. Can you make it happen?</text>
+	</string>
+
+	<string id="gfcmod_loan_reminder_4">
+		<text>Alright, we've talked about this before, and it's starting to wear on our friendship. I need that money back. Now.</text>
+	</string>
+
+	<string id="gfcmod_loan_reminder_5">
+		<text>Look, I've had enough of waiting. You owe me that money, and I'm getting pissed off about it. Sort it out, ok? Ok.</text>
+	</string>
+
+
+	<string id="gfcmod_loan_reminder_6">
+    <text>Time's ticking, and I'm still waiting for that money. Seriously, this is getting old. Pay up!</text>
+	</string>
+
+	<string id="gfcmod_loan_reminder_7">
+		<text>You're really pushing it now. I've been more than patient, but my patience is running out. I need that money back, and I need it now!</text>
+	</string>
+
+	<string id="gfcmod_loan_reminder_8">
+		<text>Jesus man, why the fuck you still have my money?! God you are so annoying.</text>
+	</string>
+
+	<string id="gfcmod_loan_reminder_9">
+		<text>This is ridiculous. You're seriously testing our friendship here. Pay back what you owe, or things are going to get ugly between us.</text>
+	</string>
+
+	<string id="gfcmod_loan_reminder_10">
+		<text>I can't believe it's come to this. You are ridiculous, give me my money back!</text>
+	</string>
+
+	<string id="gfcmod_companion_leave_actor">
+		<text>Yeah I'm out, this is really not working out. You're on your own. stalker.</text>
+	</string>
+
+	<string id="gfcmod_companion_leave_warning_1">
+		<text>I don't know if this situation is working, you know? I'm considering leaving the squad.</text>
+	</string>
+
+	<string id="gfcmod_companion_leave_warning_2">
+		<text>Our path's diverging. Unless things change, I might have to walk it alone. Just a heads-up.</text>
+	</string>
+
+	<string id="gfcmod_companion_leave_warning_3">
+		<text>Not sure if sticking around is the smart move. Zone's tough, and I don't know if you got what it takes.</text>
+	</string>
+
+	<string id="gfcmod_companion_leave_warning_4">
+		<text>The Zone's unpredictable, and so is our situation. Thinking about going solo for a bit.</text>
+	</string>
+
+	<string id="gfcmod_companion_leave_warning_5">
+		<text>Thinking of ditching the group. Things ain't working.</text>
+	</string>
 </string_table>

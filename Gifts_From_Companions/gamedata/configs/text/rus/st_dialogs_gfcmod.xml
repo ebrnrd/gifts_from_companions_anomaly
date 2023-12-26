@@ -3,75 +3,75 @@
 <string_table>
 
     <string id="gfcmod_companion_settings_open">
-        <text>Can I talk to you for a second?</text>
+        <text>Можно тебя на секунду?</text>
     </string>
 
     <string id="gfcmod_companion_settings_open_response">
-        <text>Yeah sure! What's up?</text>
+        <text>Конечно! Что такое?</text>
     </string>
 
     <string id="gfcmod_companion_settings_back">
-        <text>Actually never mind.</text>
+        <text>Забудь.</text>
     </string>
 
     <string id="gfcmod_change_gifts_category">
-        <text>About the stuff your are bringing me...</text>
+        <text>Насчет тех вещей, что ты мне приносишь...</text>
     </string>
 
     <string id="gfcmod_change_gifts_category_response">
-        <text>Yes, what about it?</text>
+        <text>Что такое?</text>
     </string>
 
     <string id="gfcmod_change_gifts_category_any">
-        <text>You can bring me anything you find, no special requests!</text>
+        <text>Можешь приносить все, что найдешь, никаких предпочтений!</text>
     </string>
 
     <string id="gfcmod_change_gifts_category_food">
-        <text>Can you only bring me food? If you have it to spare.</text>
+        <text>Можешь приносить мне только еду? Если у тебя есть немного.</text>
     </string>
 
     <string id="gfcmod_change_gifts_category_drink">
-        <text>I just need drinks or cigarettes.</text>
+        <text>Мне нужны напитки и сигареты.</text>
     </string>
 
     <string id="gfcmod_change_gifts_category_medical">
-        <text>I'm looking for medical supplies, let me know if you find any.</text>
+        <text>Я ищу медицину, дай знать, если найдешь что-то.</text>
     </string>
 
     <string id="gfcmod_change_gifts_category_tool">
-        <text>I need tools, keep your eyes open for those.</text>
+        <text>Мне нужны инструменты, смотри в оба.</text>
     </string>
 
     <string id="gfcmod_change_gifts_category_repair">
-        <text>I need stuff to repair my gear, care to share?</text>
+        <text>Мне нужны расходные материалы, чтобы починить снаряжение, можешь поделиться?</text>
     </string>
 
     <string id="gfcmod_change_gifts_category_misc">
-        <text>Just bring me junk, that's all I want.</text>
+        <text>Просто неси мне барахло, это все, что мне нужно.</text>
     </string>
 
     <string id="gfcmod_change_gifts_category_ammo">
-        <text>I'm low on ammo, if you find some let me know.</text>
+        <text>У меня мало патронов, дай знать если найдешь.</text>
     </string>
     
     <string id="gfcmod_change_gifts_category_final_response">
-        <text>Sure, my friend! I'll find something alright.</text>
+        <text>Конечно, дружище! Постараюсь найти для тебя.</text>
     </string>
 
     <string id="gfcmod_ask_for_loan">
-        <text>I was wondering if you could lend me some money.</text>
+        <text>Я хотел бы попросить тебя одолжить мне денег.</text>
     </string>
 
     <string id="gfcmod_confirm_loan_response">
-        <text>Sure! This is all I can do, no interests. Just don't make me wait too long to have them back.</text>
+        <text>Конечно! Это все, что я могу дать. Только не заставляй меня долго ждать.</text>
     </string>
 
     <string id="gfcmod_pay_back_loan">
-        <text>I have your money back, thanks for the help!</text>
+        <text>Возвращаю твои деньги, спасибо за помощь!</text>
     </string>
 
     <string id="gfcmod_pay_back_loan_response">
-        <text>You're welcome, let me know in the future if you need anything.</text>
+        <text>Всегда пожалуйста! Дай знать, если понадобится что-то еще.</text>
     </string>
 
 

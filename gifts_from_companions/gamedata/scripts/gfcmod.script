@@ -21,6 +21,7 @@ local hide_friendship_messages = false
 local companions_quests_toggle
 local task_timer
 local loan_timer
+local companion_leave_toggle
 local debug_mode = false
 
 -- CONSTANTS --
@@ -28,8 +29,11 @@ local show_time = 5000 -- how long the notifications stay on the screen
 local max_gift_distance = 30 --max distance from companion to player to give gift
 local random_messages_number = 5 -- the total number of gift phrases in st_gfcmod_messages.xml
 local temp_friendship_timer = 30 -- seconds between each temp friendship check
+local min_friendship = -10
 
-local companion_needs_type_tbl = {"delivery", "bounty"}
+local companion_leave_timer = 300
+
+local companion_needs_type_tbl = {"delivery", "bounty"} -- not used
 
 local clr_g = utils_xml.get_color("d_green")
 local clr_w = utils_xml.get_color("white")
@@ -71,6 +75,7 @@ function on_option_change()
     calculate_tg_friendship_target()
     calculate_tg_task_target()
     calculate_tg_loan_target()
+    calculate_tg_companion_leave_target()
 end
 
 function on_game_load()
@@ -86,6 +91,7 @@ function load_gfcmod_settings()
     friendship_on_monster_death_mult = gfcmod_mcm.get_config("friendship_on_monster_death_mult")
     hide_friendship_messages = gfcmod_mcm.get_config("hide_friendship_messages")
     companions_quests_toggle = gfcmod_mcm.get_config("companions_quests_toggle")
+    companion_leave_toggle = gfcmod_mcm.get_config("companion_leave_toggle")
     task_timer = gfcmod_mcm.get_config("task_timer")
     loan_timer = gfcmod_mcm.get_config("loan_timer")
     debug_mode = gfcmod_mcm.get_config("debug_mode")
@@ -114,6 +120,11 @@ end
 function calculate_tg_loan_target() -- calculate time for next loan check
     local tg = time_global()
     gfcmod_cache_tbl.tg_loan_target = tg + loan_timer*1000
+end
+
+function calculate_tg_companion_leave_target() -- calculate time for next companion leave check
+    local tg = time_global()
+    gfcmod_cache_tbl.tg_companion_leave_target = tg + companion_leave_timer*1000
 end
 
 -- Companions manager
@@ -158,7 +169,7 @@ function gfcmod_update_companions_tbl()
         local category_found = c.category or "category not found"
         local in_need = c.in_need and "true" or "false"
         local active_task_id = c.active_task_id or "no task assigned"
-        printdbg("Companion id: " .. i .. " | Category: " .. category_found .. " | Need: " .. in_need .. " | Task: " .. active_task_id)
+        --printdbg("Companion id: " .. i .. " | Category: " .. category_found .. " | Need: " .. in_need .. " | Task: " .. active_task_id)
     end
 end
 
@@ -188,6 +199,15 @@ function gfcmod_get_companions_count() -- gets the number of the player's compan
     return #companions_tbl
 end
 
+function gfcmod_companion_leave_actor(companion)
+    if (not companion) or (not companion:id()) then return end
+    local msg = clr_g .. companion:character_name() .. ": " .. clr_w ..gt("gfcmod_companion_leave_actor")
+    
+    utils_obj.execute_script_on_squad(companion,axr_companions.remove_from_actor_squad)
+
+    news_manager.send_tip(db.actor, msg, nil, companion, show_time, companion:id())
+end
+
 -- Friendship manager
 
 function add_friendship(friendship_to_add, type, p) -- friendship_to_add = friendship to add to the total friendship, type = the type of friendship increment (passive or other)
@@ -209,7 +229,7 @@ function add_friendship(friendship_to_add, type, p) -- friendship_to_add = frien
         friendship_increase_or_decrease = "increase"
         gfcmod_cache_tbl.friendship = gfcmod_cache_tbl.friendship + friendship_to_add
 
-        if gfcmod_cache_tbl.friendship < 0 then gfcmod_cache_tbl.friendship = 0 end
+        if gfcmod_cache_tbl.friendship < min_friendship then gfcmod_cache_tbl.friendship = min_friendship end
         if gfcmod_cache_tbl.friendship > max_friendship then gfcmod_cache_tbl.friendship = max_friendship end
           
     end
@@ -218,7 +238,7 @@ function add_friendship(friendship_to_add, type, p) -- friendship_to_add = frien
         friendship_increase_or_decrease = "decrease"
         gfcmod_cache_tbl.friendship = gfcmod_cache_tbl.friendship + friendship_to_add
 
-        if gfcmod_cache_tbl.friendship < 0 then gfcmod_cache_tbl.friendship = 0 end
+        if gfcmod_cache_tbl.friendship < min_friendship then gfcmod_cache_tbl.friendship = min_friendship end
         if gfcmod_cache_tbl.friendship > max_friendship then gfcmod_cache_tbl.friendship = max_friendship end
     end
 
@@ -230,9 +250,9 @@ function add_friendship(friendship_to_add, type, p) -- friendship_to_add = frien
 
     if not type then
         msg = strformat(game.translate_string("st_gfcmod_friendship_" .. friendship_increase_or_decrease .. "_basic"))
-    elseif type == "revenge" and p[1] and p[1] ~= "" then
+    elseif type and p and p[1] and p[1] ~= "" then
         msg = strformat(game.translate_string("st_gfcmod_friendship_" .. friendship_increase_or_decrease .. "_" .. type),p[1])     
-    else 
+    elseif type and (not p) then
         msg = strformat(game.translate_string("st_gfcmod_friendship_" .. friendship_increase_or_decrease .. "_" .. type))
     end 
 
@@ -254,7 +274,7 @@ end
 function gfcmod_set_max_friendship() -- calculates and sets the max friendship based on the players total companions number (without story companions)
     local current_companions_number = gfcmod_get_companions_count()
     max_friendship = current_companions_number * 50
-    if gfcmod_cache_tbl.friendship < 0 then gfcmod_cache_tbl.friendship = 0 end
+    if gfcmod_cache_tbl.friendship < min_friendship then gfcmod_cache_tbl.friendship = min_friendship end
     if gfcmod_cache_tbl.friendship > max_friendship then gfcmod_cache_tbl.friendship = max_friendship end
 end
 
@@ -264,6 +284,13 @@ function get_current_friendship() -- returns the current friendship, used mainly
     end
     local current_friendship = gfcmod_cache_tbl.friendship
     return current_friendship
+end
+
+function get_max_friendship() 
+    if not max_friendship then
+        return 0
+    end
+    return max_friendship
 end
 
 function get_current_friendship_stage() -- returns the name of the current friendship stage
@@ -320,7 +347,7 @@ function set_companion_active_task(companion_id, task_id)
     if not gfcmod_companions_tbl[companion_id] then return end
     if not gfcmod_companions_tbl[companion_id].active_task_id or gfcmod_companions_tbl[companion_id].active_task_id == "" then
         gfcmod_companions_tbl[companion_id].active_task_id = task_id
-        printdbg("Assigned task: " .. task_id .. " to companion: " .. companion_id)
+        --printdbg("Assigned task: " .. task_id .. " to companion: " .. companion_id)
     end
 end
 
@@ -365,6 +392,7 @@ function gfcmod_loan_from_companion(first_speaker, second_speaker)
     dialogs.relocate_money(db.actor,tonumber(loan_money),"in")
     gfcmod_cache_tbl.companion_loan = {npc_id, loan_money}
     gfcmod_cache_tbl.companion_loan_counter = 0
+    gfcmod_cache_tbl.has_just_asked_for_loan = true
     calculate_tg_loan_target()
 end
 
@@ -383,6 +411,21 @@ function pay_companion_loan_back(first_speaker, second_speaker)
         gfcmod_cache_tbl.companion_loan = nil
         gfcmod_cache_tbl.companion_loan_counter = 0
     end
+end
+
+function check_loan_fail()
+    if not gfcmod_cache_tbl.companion_loan then return end
+    local companion_id = gfcmod_cache_tbl.companion_loan[1]
+    if not gfcmod_companions_tbl[companion_id] then
+        fail_to_pay_loan()
+    end
+end
+
+function fail_to_pay_loan()
+    gfcmod_cache_tbl.companion_loan = nil
+    gfcmod_cache_tbl.companion_loan_counter = 0
+    gfcmod_cache_tbl.has_just_asked_for_loan = false
+    xr_effects.decrease_rep(nil, nil, {20})
 end
 
 function is_not_companion_loan(first_speaker, second_speaker)
@@ -424,6 +467,11 @@ function has_companion_loan_money(first_speaker, second_speaker)
 	return false
 end
 
+function can_ask_for_companion_loan(first_speaker, second_speaker)    
+    if is_not_companion_loan(first_speaker, second_speaker) and (not gfcmod_cache_tbl.has_just_asked_for_loan) then
+        return true
+    end
+end
 
 -- ============= DIALOG SYSTEM ================= THANKS TO NLTP_ASHES FOR THE HELP
 
@@ -676,12 +724,23 @@ function actor_on_first_update() -- here I check if the variables saved in cache
         gfcmod_cache_tbl.tg_task_target = gfcmod_cache_tbl.tg_task_target - (gfcmod_cache_tbl.tg_last - tg)
     end
 
+    if not gfcmod_cache_tbl.tg_companion_leave_target or gfcmod_cache_tbl.tg_companion_leave_target == 0 then
+        gfcmod_cache_tbl.tg_companion_leave_target = 0
+        calculate_tg_companion_leave_target()
+    elseif is_first_load and gfcmod_cache_tbl.tg_last and gfcmod_cache_tbl.tg_last ~= 0 then
+        local tg = time_global()
+        gfcmod_cache_tbl.tg_companion_leave_target = gfcmod_cache_tbl.tg_companion_leave_target - (gfcmod_cache_tbl.tg_last - tg)
+    end
+
     if not gfcmod_cache_tbl.tg_loan_target or gfcmod_cache_tbl.tg_loan_target == 0 then
         gfcmod_cache_tbl.tg_loan_target = 0
         calculate_tg_loan_target()
     elseif is_first_load and gfcmod_cache_tbl.tg_last and gfcmod_cache_tbl.tg_last ~= 0 then
         local tg = time_global()
         gfcmod_cache_tbl.tg_loan_target = gfcmod_cache_tbl.tg_loan_target - (gfcmod_cache_tbl.tg_last - tg)
+    end
+    if not gfcmod_cache_tbl.has_just_asked_for_loan then
+        gfcmod_cache_tbl.has_just_asked_for_loan = false
     end
 
     if not gfcmod_cache_tbl.companion_task_active or gfcmod_cache_tbl.companion_task_active == false then
@@ -710,6 +769,8 @@ function actor_on_update() -- here we check the timers, when a timer is lower th
     local tg = time_global()
 
     gfcmod_update_companions_tbl()
+
+    check_loan_fail()
 
     gfcmod_cache_tbl.tg_last = tg -- the engine everytime the actual game is opened, resets the global times, this helps to calculate the delta from the tg from last session
     
@@ -769,15 +830,41 @@ function actor_on_update() -- here we check the timers, when a timer is lower th
         calculate_tg_task_target()
     end
 
-    if tg >= gfcmod_cache_tbl.tg_loan_target and gfcmod_cache_tbl.companion_loan then
-        
-        gfcmod_cache_tbl.companion_loan_counter = gfcmod_cache_tbl.companion_loan_counter + 1
-        local companion_id = gfcmod_cache_tbl.companion_loan and gfcmod_cache_tbl.companion_loan[1]
-        local companion_obj = companion_id and level.object_by_id(companion_id)
-        add_friendship(-gfcmod_cache_tbl.companion_loan_counter, "loan")
-        local msg = "You owe money to X companion. Friendship decreased by " .. tostring(gfcmod_cache_tbl.companion_loan_counter)
-        news_manager.send_tip(db.actor, msg, nil, companion_obj, show_time, companion_obj:id())
+    if tg >= gfcmod_cache_tbl.tg_loan_target then
+        if gfcmod_cache_tbl.companion_loan then        
+            gfcmod_cache_tbl.companion_loan_counter = gfcmod_cache_tbl.companion_loan_counter + 1
+            local companion_id = gfcmod_cache_tbl.companion_loan and gfcmod_cache_tbl.companion_loan[1]
+            local companion_obj = companion_id and level.object_by_id(companion_id)
+            local companion_name = companion_obj:character_name() or "your companion"
+            local companion_loan_counter_clamped = gfcmod_cache_tbl.companion_loan_counter
+            if companion_loan_counter_clamped > 5 then companion_loan_counter_clamped = 10 end
+            add_friendship(-gfcmod_cache_tbl.companion_loan_counter, "loan", {companion_name})
+            local msg = clr_g .. companion_name .. ": " .. clr_w .. gt("gfcmod_loan_reminder_" .. companion_loan_counter_clamped)
+            news_manager.send_tip(db.actor, msg, nil, companion_obj, show_time, companion_obj:id())
+        end
+        if gfcmod_cache_tbl.has_just_asked_for_loan then
+            gfcmod_cache_tbl.has_just_asked_for_loan = false
+        end
         calculate_tg_loan_target()
+    end
+    --printdbg("current friendship is " .. tostring(get_current_friendship()))
+    -- companion tasks timer
+    if tg >= gfcmod_cache_tbl.tg_companion_leave_target and (get_current_friendship() < 0) and companion_leave_toggle then
+        --printdbg("friendship is " .. tostring(get_current_friendship()) .. ". Companion_leave is passed")
+        local random_companion = gfcmod_get_random_companion()
+        local companion_leaving_id = (gfcmod_cache_tbl.companion_loan_counter >= 5) and gfcmod_cache_tbl.companion_loan and gfcmod_cache_tbl.companion_loan[1] or random_companion:id()
+        if not companion_leaving_id then return end
+        local companion_leaving_obj = level.object_by_id(companion_leaving_id)
+        
+        if math.random() < math.abs( gfcmod_cache_tbl.friendship / 20 ) then
+            --printdbg("leaving companion id: " .. tostring(companion_leaving_id))
+            gfcmod_companion_leave_actor(companion_leaving_obj)
+        else
+            local msg = clr_g .. companion_leaving_obj:character_name() .. ": " .. clr_w .. gt("gfcmod_companion_leave_warning_" .. math.random(1,5))
+            news_manager.send_tip(db.actor, msg, nil, companion_leaving_obj, show_time, companion_leaving_obj:id())
+        end
+            
+        calculate_tg_companion_leave_target()
     end
 end
 
