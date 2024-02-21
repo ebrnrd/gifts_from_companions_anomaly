@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="windows-1251"?>
+
+<string_table>
+
+	<string id="gfcmod_gift_task_1_title_static">
+		<text>Solicitud del compa&#241;ero</text>
+	</string>
+
+	<string id="gfcmod_gift_task_1_descr_static">
+		<text>Uno de tus compa&#241;eros necesita algo y te pidi&#243; ayuda.</text>
+	</string>
+
+	<string id="gfcmod_gift_task_1_title">
+		<text>Solicitud del compa&#241;ero: encuentra %s para %s</text>
+	</string>
+
+	<string id="gfcmod_gift_task_1_descr">
+		<text>%s necesita %s y me pidi&#243; que se lo trajera</text>
+	</string>
+
+	<string id="gfcmod_gift_task_1_about">
+		<text>Esta es la solicitud acerca de</text>
+	</string>
+
+	<string id="gfcmod_gift_task_1_job">
+		<text>Este es el trabajo de la solicitud</text>
+	</string>
+
+	<string id="gfcmod_gift_task_1_fetch_about">
+		<text>Esta es la descripci&#243;n de la b&#250;squeda</text>
+	</string>
+
+	<string id="gfcmod_gift_task_1_finish">
+		<text>Gracias, amigo m&#237;o, lo aprecio. Realmente lo hago.</text>
+	</string>
+
+</string_table>
+

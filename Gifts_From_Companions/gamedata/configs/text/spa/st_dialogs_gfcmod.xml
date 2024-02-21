@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="windows-1251" standalone="yes" ?>
+
+<string_table>
+
+	<string id="gfcmod_companion_settings_open">
+		<text>&#191;Puedo hablar contigo por un momento?</text>
+	</string>
+
+	<string id="gfcmod_companion_settings_open_response">
+		<text>&#161;S&#237;, claro! &#191;Qu&#233; pasa?</text>
+	</string>
+
+	<string id="gfcmod_companion_settings_back">
+		<text>En realidad, olv&#237;dalo.</text>
+	</string>
+
+	<string id="gfcmod_change_gifts_category">
+		<text>Sobre las cosas que me est&#225;s trayendo...</text>
+	</string>
+
+	<string id="gfcmod_change_gifts_category_response">
+		<text>S&#237;, &#191;qu&#233; pasa con eso?</text>
+	</string>
+
+	<string id="gfcmod_change_gifts_category_any">
+		<text>Puedes traerme cualquier cosa que encuentres, &#161;sin solicitudes especiales!</text>
+	</string>
+
+	<string id="gfcmod_change_gifts_category_food">
+		<text>&#191;Puedes traerme solo comida? Si tienes de sobra.</text>
+	</string>
+
+	<string id="gfcmod_change_gifts_category_drink">
+		<text>Solo necesito bebidas o cigarrillos.</text>
+	</string>
+
+	<string id="gfcmod_change_gifts_category_medical">
+		<text>Busco suministros m&#233;dicos, av&#237;same si encuentras algo.</text>
+	</string>
+
+	<string id="gfcmod_change_gifts_category_tool">
+		<text>Necesito herramientas, mant&#233;n los ojos abiertos para eso.</text>
+	</string>
+
+	<string id="gfcmod_change_gifts_category_repair">
+		<text>Necesito cosas para reparar mi equipo, &#191;te importar&#237;a compartir?</text>
+	</string>
+
+	<string id="gfcmod_change_gifts_category_misc">
+		<text>Solo tr&#225;eme basura, eso es todo lo que quiero.</text>
+	</string>
+
+	<string id="gfcmod_change_gifts_category_ammo">
+		<text>Me estoy quedando sin munici&#243;n, av&#237;same si encuentras algo.</text>
+	</string>
+
+	<string id="gfcmod_change_gifts_category_final_response">
+		<text>&#161;Claro, mi amigo! Encontrar&#233; algo, seguro.</text>
+	</string>
+
+	<string id="gfcmod_ask_for_loan">
+		<text>Me preguntaba si podr&#237;as prestarme algo de dinero.</text>
+	</string>
+
+	<string id="gfcmod_confirm_loan_response">
+		<text>&#161;Claro! Esto es todo lo que puedo hacer, sin intereses. Solo no me hagas esperar demasiado para devolverlo.</text>
+	</string>
+
+	<string id="gfcmod_pay_back_loan">
+		<text>He devuelto tu dinero, &#161;gracias por la ayuda!</text>
+	</string>
+
+	<string id="gfcmod_pay_back_loan_response">
+		<text>De nada, av&#237;same en el futuro si necesitas algo.</text>
+	</string>
+
+</string_table>

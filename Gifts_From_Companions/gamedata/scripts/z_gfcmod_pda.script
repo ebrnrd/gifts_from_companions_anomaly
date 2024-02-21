@@ -15,7 +15,7 @@ end
 base_reset = ui_pda_relations_tab.pda_relations_tab.Reset
 function ui_pda_relations_tab.pda_relations_tab:Reset()
 	base_reset(self)
-    if gfcmod.gfcmod_get_companions_count() <= 0 then
+    if gfcmod.gfcmod_get_all_companions_count() <= 0 then
         self.friendship_container:SetText("")
     else
         local friendship_and_max_friendship = "(" .. gfcmod.get_current_friendship() .. "/" .. gfcmod.get_max_friendship() .. ")"

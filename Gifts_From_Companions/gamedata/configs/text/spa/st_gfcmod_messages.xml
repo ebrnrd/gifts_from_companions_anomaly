@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="windows-1251"?>
+
+<string_table>
+
+    <!--MENSAJES DE REGALOS-->
+
+    <string id="st_gfcmod_bad1">
+        <text>&#161;Oye! Encontr&#233; esto. Realmente no lo necesito, as&#237; que supongo que puedes qued&#225;rtelo.</text>
+    </string>
+    <string id="st_gfcmod_bad2">
+        <text>&#161;Oye! &#191;Quieres esto?</text>
+    </string>
+    <string id="st_gfcmod_bad3">
+        <text>Realmente no conf&#237;o en ti, pero a&#250;n podemos ayudarnos mutuamente. Puedes quedarte con esto.</text>
+    </string>
+    <string id="st_gfcmod_bad4">
+        <text>&#161;Oye, tropec&#233; con esto! No lo necesito, y parece que podr&#237;as necesitar ayuda.</text>
+    </string>
+    <string id="st_gfcmod_bad5">
+        <text>La confianza se gana, y a&#250;n no llego a eso, pero toma esto. Mejor que lo tengas t&#250; que la Zona se lo trague.</text>
+    </string>
+
+    <string id="st_gfcmod_normal1">
+        <text>En la Zona, necesitas toda la ayuda que puedas conseguir. Encontr&#233; esto, pens&#233; que podr&#237;a inclinar las probabilidades a tu favor.</text>
+    </string>
+    <string id="st_gfcmod_normal2">
+        <text>No todo son anomal&#237;as y mutantes contigo cerca. Aqu&#237; tienes, algo peque&#241;o para el camino.</text>
+    </string>
+    <string id="st_gfcmod_normal3">
+        <text>Este lugar puede devorarte. Aqu&#237; tienes algo peque&#241;o para mantenerte un paso adelante.</text>
+    </string>
+    <string id="st_gfcmod_normal4">
+        <text>Aprecio la compa&#241;&#237;a. Encontr&#233; esto tirado, pens&#233; que podr&#237;as darle un mejor uso.</text>
+    </string>
+    <string id="st_gfcmod_normal5">
+        <text>No todo es malo viajando contigo. Aqu&#237;, toma esto. Consid&#233;ralo un raro gesto de amabilidad.</text>
+    </string>
+
+    <string id="st_gfcmod_good1">
+        <text>Estoy contigo, y pens&#233; que podr&#237;as necesitar esto. No digas que nunca hice nada por ti.</text>
+    </string>
+    <string id="st_gfcmod_good2">
+        <text>No eres tan malo de tener cerca. Aqu&#237;, un peque&#241;o regalo para mostrar mi aprecio.</text>
+    </string>
+    <string id="st_gfcmod_good3">
+        <text>Hacemos un buen equipo. Encontr&#233; esto, pens&#233; que podr&#237;a ser &#250;til para ti.</text>
+    </string>
+    <string id="st_gfcmod_good4">
+        <text>En este lugar maldito, los aliados son raros. Considera esto un gesto de confianza, Stalker.</text>
+    </string>
+    <string id="st_gfcmod_good5">
+        <text>Estamos empezando a entendernos, &#191;verdad? Aqu&#237;, algo peque&#241;o para el camino.</text>
+    </string>
+
+    <string id="st_gfcmod_excellent1">
+        <text>La confianza como esta es dif&#237;cil de encontrar. Aqu&#237; tienes un regalo, un s&#237;mbolo de nuestro v&#237;nculo inquebrantable.</text>
+    </string>
+    <string id="st_gfcmod_excellent2">
+        <text>Me alegra que estemos del mismo lado. Encontr&#233; esto y pens&#233; en ti.</text>
+    </string>
+    <string id="st_gfcmod_excellent3">
+        <text>Eres uno de los pocos en quienes puedo confiar aqu&#237;. Aqu&#237; tienes algo peque&#241;o para ti, amigo m&#237;o.</text>
+    </string>
+    <string id="st_gfcmod_excellent4">
+        <text>No eres solo un compa&#241;ero; eres un verdadero amigo. Toma esto como un agradecimiento por estar all&#237;.</text>
+    </string>
+    <string id="st_gfcmod_excellent5">
+        <text>Las pruebas de la Zona son m&#225;s f&#225;ciles contigo cerca. Esto es para ti, mi compa&#241;ero de confianza.</text>
+    </string>
+
+    <!--MENSAJES DE AMISTAD-->
+
+    <string id="st_gfcmod_friendship_increase_basic">
+        <text>Los eventos recientes aumentaron la amistad en tu equipo.</text>
+    </string>
+
+    <string id="st_gfcmod_friendship_increase_passive">
+        <text>Pasar tiempo juntos aument&#243; la amistad en tu equipo.</text>
+    </string>
+
+    <string id="st_gfcmod_friendship_increase_revenge">
+        <text>Vengaste la muerte de %s. Aument&#243; la amistad.</text>
+    </string>
+
+    <string id="st_gfcmod_friendship_decrease_revenge">
+        <text>Aunque vengaste la muerte de %s, la p&#233;rdida fue demasiado para el equipo. Disminuy&#243; la amistad.</text>
+    </string>
+
+    <string id="st_gfcmod_friendship_increase_companion_death_good">
+        <text>La muerte de tu compa&#241;ero fortaleci&#243; el v&#237;nculo en tu equipo. Aument&#243; la amistad.</text>
+    </string>
+
+    <string id="st_gfcmod_friendship_decrease_basic">
+        <text>Los eventos recientes disminuyeron la amistad en tu equipo.</text>
+    </string>
+
+    <string id="st_gfcmod_friendship_decrease_companion_death_bad">
+        <text>La muerte de tu compa&#241;ero destruy&#243; el &#225;nimo de tu equipo. Se redujo a la mitad la amistad.</text>
+    </string>
+
+    <string id="st_gfcmod_friendship_decrease_task_fail">
+        <text>Decepcionaste a tu compa&#241;ero. Disminuy&#243; la amistad.</text>
+    </string>
+
+    <string id="st_gfcmod_friendship_decrease_loan">
+        <text>Debes dinero a %s. Disminuy&#243; la amistad.</text>
+    </string>
+
+    <string id="st_gfcmod_friendship_increase_task_complete">
+        <text>Ayudaste a tu compa&#241;ero. Aument&#243; la amistad.</text>
+    </string>
+
+    <string id="st_gfcmod_friendship_stage_changed">
+        <text>Nueva etapa de amistad:</text>
+    </string>
+
+    <string id="st_gfcmod_friendship_stage_bad">
+        <text>Mala</text>
+    </string>
+
+    <string id="st_gfcmod_friendship_stage_normal">
+        <text>Normal</text>
+    </string>
+
+    <string id="st_gfcmod_friendship_stage_good">
+        <text>Buena</text>
+    </string>
+
+    <string id="st_gfcmod_friendship_stage_excellent">
+        <text>Excelente</text>
+    </string>
+
+    <string id="gfcmod_loan_reminder_1">
+        <text>Hey, solo te recuerdo sobre el dinero que te di. Sin prisa, pero ya sabes, no lo olvides.</text>
+    </string>
+
+    <string id="gfcmod_loan_reminder_2">
+        <text>Mira, odio tener que mencionarlo de nuevo, pero &#191;ese dinero que me debes? &#191;Hay alguna posibilidad de que me lo devuelvas pronto?</text>
+    </string>
+
+    <string id="gfcmod_loan_reminder_3">
+        <text>Hey, he sido paciente, pero esta situaci&#243;n del dinero se est&#225; poniendo un poco tensa. Realmente podr&#237;a usarlo de vuelta. &#191;Puedes hacerlo realidad?</text>
+    </string>
+
+    <string id="gfcmod_loan_reminder_4">
+        <text>Bien, ya hemos hablado de esto antes, y est&#225; empezando a afectar nuestra amistad. Necesito ese dinero de vuelta. Ahora.</text>
+    </string>
+
+    <string id="gfcmod_loan_reminder_5">
+        <text>Mira, he tenido suficiente de esperar. Me debes ese dinero, y me estoy enfadando por ello. Resu&#233;lvelo, &#191;vale? &#191;Vale?</text>
+    </string>
+
+    <string id="gfcmod_loan_reminder_6">
+        <text>El tiempo pasa, y todav&#237;a estoy esperando ese dinero. En serio, esto ya est&#225; viejo. &#161;Paga!</text>
+    </string>
+
+    <string id="gfcmod_loan_reminder_7">
+        <text>Realmente lo est&#225;s llevando al l&#237;mite. He sido m&#225;s que paciente, pero mi paciencia se est&#225; agotando. Necesito ese dinero de vuelta, &#161;y lo necesito ahora!</text>
+    </string>
+
+    <string id="gfcmod_loan_reminder_8">
+        <text>Por Dios, hombre, &#191;por qu&#233; demonios sigues teniendo mi dinero? Eres tan molesto.</text>
+    </string>
+
+    <string id="gfcmod_loan_reminder_9">
+        <text>Esto es rid&#237;culo. Est&#225;s poniendo a prueba seriamente nuestra amistad aqu&#237;. Devuelve lo que debes, o las cosas se pondr&#225;n feas entre nosotros.</text>
+    </string>
+
+    <string id="gfcmod_loan_reminder_10">
+        <text>No puedo creer que haya llegado a esto. Eres rid&#237;culo, &#161;devu&#233;lveme mi dinero!</text>
+    </string>
+
+    <string id="gfcmod_companion_leave_actor">
+        <text>S&#237;, me voy, esto realmente no est&#225; funcionando. Est&#225;s solo, stalker.</text>
+    </string>
+
+    <string id="gfcmod_companion_leave_warning_1">
+        <text>No s&#233; si esta situaci&#243;n est&#225; funcionando, &#191;sabes? Estoy considerando dejar el grupo.</text>
+    </string>
+
+    <string id="gfcmod_companion_leave_warning_2">
+        <text>Nuestros caminos se est&#225;n separando. A menos que las cosas cambien, podr&#237;a tener que seguir solo. Solo un aviso.</text>
+    </string>
+
+    <string id="gfcmod_companion_leave_warning_3">
+        <text>No estoy seguro de que quedarme sea la decisi&#243;n correcta. La Zona es dif&#237;cil, y no s&#233; si tienes lo necesario.</text>
+    </string>
+
+    <string id="gfcmod_companion_leave_warning_4">
+        <text>La Zona es impredecible, y as&#237; es nuestra situaci&#243;n. Estoy pensando en ir solo por un tiempo.</text>
+    </string>
+
+    <string id="gfcmod_companion_leave_warning_5">
+        <text>Pensando en abandonar el grupo. Las cosas no est&#225;n funcionando.</text>
+    </string>
+</string_table>

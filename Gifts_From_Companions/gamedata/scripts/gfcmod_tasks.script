@@ -189,7 +189,6 @@ xr_effects.gfcmod_gift_reward_and_remove = function(actor, npc, p) --	Remove fet
 			if (obj:section() == sec) then
 				local cnt = (max_use > 1) and obj:get_remaining_uses() or 1
 				local con = use_con and obj:condition() or 1
-				
 				collected_itms[obj:id()] = cnt
 				total_cost = total_cost + (cost * cnt * (con * con) * mult)
 				cur_count = cur_count - cnt
@@ -245,6 +244,7 @@ xr_effects.gfcmod_gift_reward_and_remove = function(actor, npc, p) --	Remove fet
 				alife_release_id(k)
 			end
 		end
+
 		if (remain > 0) and IsItem("multiuse",sec) then
 			alife_create_item(sec, db.actor, {uses = remain})
 			local last_obj_uses = last_obj:get_remaining_uses()
@@ -253,6 +253,7 @@ xr_effects.gfcmod_gift_reward_and_remove = function(actor, npc, p) --	Remove fet
 				alife_process_item(last_obj:section(), last_obj:id(), {uses = uses})
 			end
 		end
+
 		
 		news_manager.relocate_item(db.actor, "out", sec, count)
 	
@@ -556,8 +557,26 @@ xr_effects.gfcmod_reset_companion_need = function(actor,npc,p)
 	gfcmod.gfcmod_reset_companion_stored_need(giver_id)
 end
 
-
-
+xr_conditions.gfcmod_task_giver_alive_and_companion = function(actor,npc,p)
+	if not (p[1]) then
+		return false
+	end
+	local tm = task_manager.get_task_manager()
+	local tsk = tm.task_info[p[1]]
+	if not (tsk) then
+		return true
+	end
+	local se_obj = tsk.task_giver_id and alife_object(tsk.task_giver_id)
+	local obj = tsk.task_giver_id and level.object_by_id(tsk.task_giver_id)
+	if (se_obj) then
+		if (se_obj:clsid() == clsid.online_offline_group_s) then
+			return true -- if squad exist then atleast 1 npc should be alive
+		elseif (se_obj:alive()) and (obj) and (obj:has_info("npcx_is_companion")) then
+			return true
+		end
+	end
+	return false
+end
 
 ---------------------------< Callbacks >---------------------------
 local function save_state(m_data)

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="windows-1251"?>
+
+<string_table>
+	<string id="ui_mcm_gfcmod_title">
+		<text>Configuraci&#243;n de Regalos de Compa&#241;eros</text>
+	</string>
+
+	<string id="ui_mcm_menu_gfcmod">
+		<text>Regalos de Compa&#241;eros</text>
+	</string>
+
+	<string id="ui_mcm_gfcmod_gifts_settings">
+		<text>Sistema de Regalos</text>
+	</string>
+	<string id="ui_mcm_gfcmod_min_timer">
+		<text>Tiempo m&#237;nimo para regalos</text>
+	</string>
+	<string id="ui_mcm_gfcmod_min_timer_desc">
+		<text>Segundos m&#237;nimos que deben pasar antes de tener la posibilidad de un nuevo regalo</text>
+	</string>
+	<string id="ui_mcm_gfcmod_max_timer">
+		<text>Tiempo m&#225;ximo para regalos</text>
+	</string>
+	<string id="ui_mcm_gfcmod_max_timer_desc">
+		<text>Segundos m&#225;ximos que pueden pasar antes de tener la posibilidad de un nuevo regalo</text>
+	</string>
+	<string id="ui_mcm_gfcmod_gift_chance">
+		<text>Probabilidad base de regalos</text>
+	</string>
+	<string id="ui_mcm_gfcmod_gift_chance_desc">
+		<text>Probabilidad de recibir un regalo en la etapa de amistad m&#225;s baja</text>
+	</string>
+
+	<string id="ui_mcm_gfcmod_friendship_settings">
+		<text>Sistema de Amistad</text>
+	</string>
+	<string id="ui_mcm_gfcmod_friendship_timer">
+		<text>Temporizador de amistad pasiva</text>
+	</string>
+	<string id="ui_mcm_gfcmod_friendship_timer_desc">
+		<text>Segundos entre cada incremento de amistad pasiva</text>
+	</string>
+	<string id="ui_mcm_gfcmod_friendship_on_npc_death_mult">
+		<text>Multiplicador de amistad al matar enemigos</text>
+	</string>
+	<string id="ui_mcm_gfcmod_friendship_on_npc_death_mult_desc">
+		<text>Multiplicador para la amistad a&#241;adida al matar a un NPC enemigo</text>
+	</string>
+	<string id="ui_mcm_gfcmod_friendship_on_monster_death_mult">
+		<text>Multiplicador de amistad al matar mutantes</text>
+	</string>
+	<string id="ui_mcm_gfcmod_friendship_on_monster_death_mult_desc">
+		<text>Multiplicador para la amistad a&#241;adida al matar a un mutante enemigo</text>
+	</string>
+	<string id="ui_mcm_gfcmod_hide_friendship_messages">
+		<text>Ocultar notificaciones de cambios en el nivel de amistad</text>
+	</string>
+
+	<string id="ui_mcm_gfcmod_tasks_settings">
+		<text>Sistema de Tareas de Compa&#241;eros</text>
+	</string>
+	<string id="ui_mcm_gfcmod_companions_quests_toggle">
+		<text>Tareas de compa&#241;eros activas</text>
+	</string>
+	<string id="ui_mcm_gfcmod_companions_quests_toggle_desc">
+		<text>Activar o desactivar el sistema de tareas de compa&#241;eros</text>
+	</string>
+	<string id="ui_mcm_gfcmod_task_timer">
+		<text>Temporizador de tareas de compa&#241;eros</text>
+	</string>
+	<string id="ui_mcm_gfcmod_task_timer_desc">
+		<text>Segundos que deben pasar antes de recibir una nueva tarea de compa&#241;ero</text>
+	</string>
+
+	<string id="ui_mcm_gfcmod_companion_leave_settings">
+		<text>Sistema de Abandono de Compa&#241;eros</text>
+	</string>
+	<string id="ui_mcm_gfcmod_companion_leave_toggle">
+		<text>Compa&#241;ero abandona el escuadr&#243;n con baja amistad</text>
+	</string>
+	<string id="ui_mcm_gfcmod_companion_leave_toggle_desc">
+		<text>Cuando la amistad cae por debajo de 0, tu compa&#241;ero tiene la posibilidad de abandonar el escuadr&#243;n</text>
+	</string>
+
+	<string id="ui_mcm_gfcmod_loan_settings">
+		<text>Sistema de Pr&#233;stamos de Compa&#241;eros</text>
+	</string>
+	<string id="ui_mcm_gfcmod_loan_timer">
+		<text>Temporizador de pr&#233;stamos de compa&#241;eros</text>
+	</string>
+	<string id="ui_mcm_gfcmod_loan_timer_desc">
+		<text>Segundos entre cada recordatorio de pr&#233;stamo y disminuci&#243;n de la amistad</text>
+	</string>
+	<string id="ui_mcm_gfcmod_debug_mode">
+		<text>Modo de depuraci&#243;n</text>
+	</string>
+</string_table>
